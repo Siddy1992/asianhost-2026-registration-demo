@@ -68,11 +68,19 @@
                 <label for="paper-select">Accepted paper <span class="required">*</span></label>
                 <select id="paper-select" required><option value="">Select an accepted paper ID and title</option></select>
                 <div id="paper-detail" class="paper-detail hidden"></div>
+                <div id="other-paper-fields" class="nested-section hidden" aria-live="polite">
+                  <label for="other-paper-id">Paper ID <span class="required">*</span></label>
+                  <input type="text" id="other-paper-id" maxlength="50" placeholder="Enter the accepted paper ID">
+                  <label for="other-paper-title" class="mt-12">Paper title <span class="required">*</span></label>
+                  <input type="text" id="other-paper-title" maxlength="300" placeholder="Enter the exact accepted paper title">
+                  <p class="field-help">Use this option only if your accepted paper is missing from the list. The organizing committee will verify the submitted paper details.</p>
+                </div>
                 <div class="coverage-card"><label class="checkbox-line"><input type="checkbox" id="cover-paper" checked><span><strong>This registration fulfills the mandatory full registration for my paper.</strong><small>Every accepted paper needs at least one full IEEE Member or Non-IEEE Member registration. Coauthors may register separately at other applicable rates.</small></span></label></div>
               </div>
               <div id="phd-fields" class="nested-section hidden"><label for="phd-ref">PhD Forum submission / acceptance reference <span class="required">*</span></label><input type="text" id="phd-ref" placeholder="e.g., PhD Forum submission reference"><p class="field-help">The conference team will verify forum acceptance separately.</p></div>
               <div class="subheading-row"><div><h3>Registration category</h3><p>Fees provided by the AsianHOST organizing committee.</p></div><span class="fee-note">8 categories</span></div>
-              <div class="tier-row"><div><strong>Registration period</strong><span>Fee schedule varies by registration period</span></div><div class="tier-toggle"><button type="button" class="active" id="early-btn">Early</button><button type="button" id="regular-btn">Regular / On-site</button></div></div>
+              <div class="tier-row"><div><strong>Registration period</strong><span>Rates are based on the conference registration deadline (IST)</span></div><div class="tier-toggle"><button type="button" class="active" id="early-btn">Early</button><button type="button" id="regular-btn">Regular / On-site</button></div></div>
+              <p id="registration-deadline-note" class="registration-deadline-note" role="status" aria-live="polite">Early registration closes 15 November 2026 at 11:59 p.m. IST. Regular / on-site rates apply from 16 November.</p>
               <div id="fee-options" class="fee-grid" role="radiogroup" aria-label="Registration fee category"></div>
               <div id="category-advisory" class="notice-inline" role="status"></div>
               <div class="form-actions"><span class="helper-text">Step 1 of 3</span><button class="btn btn-primary" id="continue-1" type="button">Continue to details <span>→</span></button></div>
