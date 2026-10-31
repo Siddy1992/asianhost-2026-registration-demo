@@ -8,3 +8,64 @@
 /* Ensure the demo pay action is always visually prominent in screenshots and live demos. */
 .checkout-actions #simulate-success{background-color:#2d58d6!important;color:#ffffff!important;opacity:1!important;transition:none!important}
 .checkout-actions #simulate-success:hover{background-color:#1c44b8!important}
+
+/* AsianHOST 2026 — participant-facing registration experience */
+.top-ribbon{letter-spacing:.065em}
+.conference-feature{min-height:280px;display:flex;align-items:center;justify-content:center;isolation:isolate}
+.feature-orbit{position:absolute;border:1px solid rgba(180,207,255,.18);border-radius:100%;pointer-events:none;z-index:-1}
+.feature-orbit-one{height:380px;width:380px;left:7%;top:-65px}
+.feature-orbit-two{height:255px;width:255px;left:24%;top:0}
+.feature-panel{position:relative;background:linear-gradient(140deg,rgba(9,29,68,.93),rgba(31,72,142,.92));box-shadow:0 26px 60px rgba(1,10,34,.28);border:1px solid rgba(209,223,255,.3);border-radius:23px;width:min(440px,100%);padding:28px 31px 26px;overflow:hidden}
+.feature-panel::after{content:'';position:absolute;width:230px;height:230px;border:1px solid rgba(255,255,255,.11);border-radius:50%;right:-115px;bottom:-145px;box-shadow:0 0 0 38px rgba(255,255,255,.025),0 0 0 78px rgba(255,255,255,.022)}
+.feature-panel-top{display:flex;justify-content:space-between;align-items:center;font-size:10px;letter-spacing:.15em;font-weight:800;color:#d7e5ff}
+.feature-panel-top img{height:53px;width:45px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,.3))}
+.feature-panel-title{font-family:Manrope,'DM Sans',sans-serif;font-size:32px;font-weight:900;letter-spacing:-.07em;color:#fff;margin-top:8px;white-space:nowrap}
+.feature-panel-title span{color:#eac477}.feature-panel-title em{font-style:normal;font-size:20px;letter-spacing:0;color:#aec9ff}
+.feature-panel-divider{width:65px;height:3px;background:#eac477;border-radius:5px;margin:17px 0 15px}
+.feature-panel p{font-size:11px;font-weight:700;letter-spacing:.13em;line-height:1.75;color:#d9e7ff;margin-bottom:22px}
+.feature-panel-bottom{display:flex;gap:18px;border-top:1px solid rgba(255,255,255,.17);padding-top:18px}
+.feature-panel-bottom span{display:flex;flex-direction:column;gap:4px;min-width:85px}
+.feature-panel-bottom strong{font-size:18px;letter-spacing:.01em;color:#fff}
+.feature-panel-bottom small{font-size:10px;font-weight:800;letter-spacing:.13em;color:#a8c1ef}
+.feature-circuit{position:absolute;background:#f1c56c;border-radius:50%;width:8px;height:8px;box-shadow:0 0 0 9px rgba(241,197,108,.12)}
+.circuit-one{top:20px;right:0}.circuit-two{bottom:20px;left:12px;width:5px;height:5px}
+.preview-disclosure{font-size:11px;line-height:1.5;color:#7a879b;margin-top:14px;padding:12px 14px;border-radius:9px;background:#f4f6fa;border-left:3px solid #a7b8d8}
+.sample-lookups{margin-top:24px;padding-top:18px;border-top:1px solid #dfe6f1}
+.sample-lookups h4{font-family:Manrope,sans-serif;font-size:14px;color:#1c355c;margin:0 0 4px}
+.sample-lookups > small{display:block;font-size:10px;color:#8b97aa;line-height:1.6;margin-top:11px}
+.sample-records{display:grid;gap:8px;margin-top:14px}
+.sample-record{display:flex;align-items:center;flex-wrap:wrap;text-align:left;gap:4px 8px;border:1px solid #dce5f2;background:#fff;border-radius:10px;padding:12px;transition:background .2s,border-color .2s}
+.sample-record:hover{background:#f1f6ff;border-color:#b5c8e8}
+.sample-record strong{font-size:11px;color:#264271;width:100%;font-family:Manrope,sans-serif}
+.sample-record small{font-size:10px;color:#697c97;flex:1;overflow-wrap:anywhere}
+.sample-record .status-pill{font-size:9px;padding:3px 8px}
+.status-message{color:#526b8f;margin:14px 0;font-size:13px}
+.status-meta-row{border-bottom:1px solid #e0e9f5;display:flex;gap:12px;align-items:start;justify-content:space-between;padding:10px 0;font-size:12px}
+.status-meta-row span{color:#75869e}.status-meta-row strong{text-align:right;overflow-wrap:anywhere;max-width:67%;color:#223b5e}
+.status-invoice{color:#506b90;font-size:11px;margin:18px 0 2px}
+.confirmation-wrap{max-width:775px;margin:0 auto;padding:5px 0 45px}
+.confirmation-card{background:#fff;border:1px solid #e1e7f1;border-radius:24px;box-shadow:0 20px 55px rgba(23,46,92,.08);padding:44px 52px;text-align:center}
+.confirmation-icon{width:80px;height:80px;border-radius:50%;font-size:42px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+.confirmation-icon.paid{background:#e8f9f0;border:3px solid #b9ecd0;color:#14885c}
+.confirmation-icon.failed{background:#fff0ec;border:3px solid #ffd1c7;color:#b84131}
+.confirmation-icon.pending{background:#fff6dc;border:3px solid #ffebb9;color:#947120}
+.confirmation-card .section-tag{margin:0 auto 11px;display:inline-flex}
+.confirmation-card h2{font-family:Manrope;font-size:32px;letter-spacing:-.035em;color:#1c2f50;margin:0 0 13px}
+.confirmation-description{max-width:510px;margin:0 auto 25px;color:#5d718c;font-size:14px;line-height:1.7}
+.confirmation-reference{border-radius:13px;background:#f2f6fe;padding:17px;border:1px solid #e2eaf8;margin-bottom:20px;display:flex;align-items:center;flex-direction:column;gap:4px}
+.confirmation-reference small{color:#7a90b1;font-size:10px;font-weight:800;letter-spacing:.08em}
+.confirmation-reference strong{font-size:19px;font-family:Manrope;color:#1c438d;overflow-wrap:anywhere}
+.confirmation-breakdown{border:1px solid #e4ebf4;border-radius:14px;text-align:left;overflow:hidden}
+.confirmation-breakdown > div{display:flex;justify-content:space-between;align-items:start;gap:15px;border-bottom:1px solid #e4ebf4;padding:13px 17px;font-size:12px}
+.confirmation-breakdown > div:last-child{border:0}.confirmation-breakdown span{color:#7d8ba0}
+.confirmation-breakdown strong{max-width:65%;overflow-wrap:anywhere;text-align:right;color:#2a3d5b}
+.confirmation-email{display:flex;align-items:center;gap:14px;text-align:left;margin-top:19px;padding:15px;border-radius:12px;background:#eef5ff;border:1px solid #d9e7fa}
+.confirmation-email span{width:38px;height:38px;flex:none;border-radius:11px;background:#d8e6fd;color:#3062b8;display:grid;place-items:center;font-size:22px}
+.confirmation-email p{font-size:12px;color:#476587;line-height:1.6;margin:0}
+.confirmation-invoice{font-size:12px;color:#6c7d95;margin:19px 0}
+.confirmation-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:20px 0}
+.confirmation-actions .btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.confirmation-card .preview-disclosure{text-align:left;margin:28px 0 0}
+.checkout-preview-note{font-size:10px!important;color:#c5d4e9!important;border-top:1px solid rgba(255,255,255,.17);padding-top:17px;margin-top:19px}
+@media(max-width:820px){.conference-feature{display:flex;min-height:275px}.hero-grid{gap:10px}.feature-panel{margin:auto}.confirmation-card{padding:35px 30px}}
+@media(max-width:600px){.conference-feature{min-height:250px}.feature-panel{padding:22px}.feature-panel-title{font-size:26px}.feature-panel-title em{font-size:15px}.feature-panel p{font-size:10px}.confirmation-card{padding:28px 18px}.confirmation-card h2{font-size:25px}.confirmation-reference strong{font-size:16px}.status-meta-row{flex-direction:column;gap:2px}.status-meta-row strong{text-align:left;max-width:100%}}

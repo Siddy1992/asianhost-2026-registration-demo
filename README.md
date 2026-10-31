@@ -1,61 +1,55 @@
-# AsianHOST 2026 — Interactive Registration / Bank Gateway Demonstration
+# AsianHOST 2026 – Conference Registration Portal (UI Reference)
 
-**A free, static GitHub Pages demo — not a real registration or payment gateway.**
+A responsive GitHub Pages website showing a conference registration flow, INR registration fees, a sample payment checkout and a searchable sample registration-status page.
 
-This standalone website demonstrates a conference participant selecting a registration category, entering sample data, reviewing the exact amount/currency, being redirected to a simulated hosted checkout and receiving a mock status confirmation. It uses plain HTML/CSS/JavaScript; no build step or paid hosting is needed.
+## Features
+- Registration type selection (paper authors, general attendees and PhD Forum).
+- All eight current INR-denominated fee categories.
+- Paper-to-full-registration validation and IEEE number collection for organizer review.
+- Mobile-friendly participant details, review and checkout.
+- Payment success/failure confirmation pages, with registered email, registration ID and invoice-on-request notice.
+- Registration status lookup using ID + email. Three built-in fictional records are available to inspect without going through registration.
+- Optional ₹10,000 supplementary IEEE/non-IEEE correction workflow.
+- Original IIT Kharagpur and AsianHOST logos.
 
-## Preview locally
+## IMPORTANT: prototype, not live payment collection
 
-Open `index.html` in a browser, or run `python3 -m http.server 8000` in the directory and open `http://localhost:8000`.
+This is a **static UI reference for developer handoff**, not a working registration backend or payment provider. No transaction, email, invoice or verification takes place. Browser-generated registrations are stored only in the visitor's `localStorage` and cannot be retrieved from another browser. Sample records are defined in `app.js` and are public fictional data. The confirmation page simulates what the live system should display; actual confirmation/failure emails require a backend with a transactional email service. **Never use this repository to solicit real registrations or payments.**
 
-## Publish free using GitHub Pages
+For production, the website developer must add authenticated backend data storage, real bank gateway order creation and payment verification via signed server callbacks/webhooks, email dispatch, admin access control, and server-side fee verification. Sensitive participant information must not be stored only in browser storage or public GitHub code. GitHub Pages is suitable for demonstration only.
 
-1. Create a repository on GitHub (e.g. `asianhost-2026-registration-demo`).
-2. Upload **all the contents of this folder** into the repository root, preserving `assets/`.
-3. In the repository go to **Settings → Pages**.
-4. Under **Build and deployment**, choose **Deploy from a branch**. Choose **main** and **/(root)**, then **Save**.
-5. GitHub will display the Pages URL: `https://YOUR-USERNAME.github.io/asianhost-2026-registration-demo/`.
-6. Use that Pages URL for the bank meeting. No payment gateway account is required for the demo.
+## Deploy to GitHub Pages
 
-For an organization-managed repository, publish under the organization's GitHub account with the proper permissions. If GitHub Pages is unavailable due to repository visibility or plan rules, consult your account settings.
+1. Upload all files to a public repository, keeping `index.html` and `checkout.html` in its root and `assets/` intact.
+2. Settings → Pages → Deploy from a branch → `main` / `(root)` → Save.
+3. Open `https://USERNAME.github.io/REPOSITORY/`.
+4. Re-upload updated files to `main` to redeploy.
 
-## Demonstrate the workflow
+## Sample status references
+- `AH26-SAMPLE-0001` + `avery@example.org` — successful
+- `AH26-SAMPLE-0002` + `jordan@example.org` — unsuccessful
+- `AH26-SAMPLE-0003` + `sam@example.org` — pending
 
-1. Choose `Paper author`, select paper `#18` and note how a covering full registration restricts categories to IEEE Member / Non-IEEE Member.
-2. Switch between Early and Regular fees (demo control only; the real registration deadline will be enforced server-side).
-3. Continue to details and select **Fill sample participant for demo**.
-4. Review, agree to demo acknowledgement and click **Proceed to demo gateway**.
-5. The mock checkout shows a specific order ID, currency and fixed fee. Choose **Simulate successful payment**.
-6. The registration-status page shows the mock payment result.
-7. If the registered category was IEEE Member, use **Demonstrate ₹10,000 non-member balance payment** in Status to illustrate a supplementary charge.
-8. Use **For the Bank** to explain requirements for a live gateway integration.
+Fees are INR base amounts; the production bank gateway may offer international cardholders local-currency conversion, subject to approval and bank policies. The conference team must enforce actual early/regular cutoff, valid paper coverage, membership and student eligibility.
 
-## Fee configuration
+## Production notification email requirements (developer handoff)
 
-| Category | Early | Regular / On-site | Fixed |
-| --- | --- | --- | --- |
-| IEEE Member | ₹50,000 | ₹60,000 | — |
-| Non-IEEE Member | ₹60,000 | ₹70,000 | — |
-| IEEE Member – Student | ₹15,000 | ₹25,000 | — |
-| Non-IEEE Member – Student | ₹25,000 | ₹35,000 | — |
-| IEEE Life Member | ₹25,000 | ₹35,000 | — |
-| General Participation – Indian Student | — | — | ₹2,000 |
-| PhD Forum – International | — | — | ₹15,000 |
-| PhD Forum – Indian | — | — | ₹5,000 |
+Send a transaction update from the live backend to the email address registered for the participant **after verifying the payment provider's authenticated status response**. Do not trigger a success email based solely on the return-page URL.
 
-All eight registration categories use INR as the fixed base currency. The values reflect the organizer-proposed conversion of the earlier USD prices at ₹100 per USD; they are not live FX quotes. Any optional local-currency display or dynamic currency conversion for international participants would be managed by the real payment provider. This static demonstration displays and simulates charges in INR only. The committee supplied these fee amounts. The 12 accepted main-conference paper IDs/titles are from [AsianHOST 2026's programme](https://www.asianhost.org/2026/program.htm); the programme is subject to organizer updates. Paper #18 is only a sample in the walkthrough; paper coverage is **not** actually verified across visitors because the site is static.
+**On success**
 
-## Important limits
+Subject: `AsianHOST 2026 — Registration Payment Successful — [Registration ID]`
 
-- No payments are processed; there is **no Razorpay/bank integration**, merchant key, payment API or bank settlement.
-- No real registration is completed or submitted to organizers. Data is stored in browser **localStorage** only, on that device. The updated INR demo uses a fresh demonstration storage key, so older simulated USD transactions will not appear. The Check Status page works only on the same browser. Use sample data, not actual personal information.
-- IEEE membership numbers are not checked. The live system will send them for manual organizer verification.
-- The mock ₹10,000 balance-payment mechanism only covers a wrong **IEEE Member → Non-IEEE Member** selection; it is a simulation.
-- The Early/Regular switch is for demonstration. In production the deadline and price must be calculated and enforced by the backend.
-- Do **not** insert real gateway public or secret credentials into client-side JavaScript or GitHub Pages.
-- Live integration requires a trusted backend (or approved serverless functions) to create fixed-amount orders, verify authenticated gateway callbacks, keep registration records, enforce one full registration per paper, and reconcile payment status. A browser redirect or static success message alone is not proof of payment.
-- Hosting the form publicly may require conference approval for branding and a privacy policy before processing personal data.
+Body should include participant name, registration ID, category, paid amount in INR, payment transaction reference, conference dates, and a link to the Check Status page. State that the invoice can be requested and will be provided at a later date.
 
-## Brand / event references
+**On failure**
 
-AsianHOST 2026, 11–13 December 2026, IIT Kharagpur Research Park, Kolkata. Logos were provided by the conference organizers for this demo. Website: https://www.asianhost.org/2026/.
+Subject: `AsianHOST 2026 — Registration Payment Unsuccessful — [Registration ID]`
+
+Body should include participant name, registration ID, attempted amount, status, advice to retry or contact the registration team, and the status-check link. Avoid saying the registration is confirmed.
+
+**On pending**
+
+Do not issue a success email until payment has been verified. The status page should show `Payment pending` and allow a secure retry or further enquiry.
+
+The developer must replace the public JavaScript data lookup with a secure backend lookup keyed by registration ID and authenticated or appropriately verified email, and integrate a transactional email provider. The static demonstration has no server-side data or email delivery.
