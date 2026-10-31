@@ -1,6 +1,6 @@
 'use strict';
 /* ASIANHOST 2026 — STATIC BANK DEMONSTRATION. No real data or payment processing. */
-const STORAGE_KEY='asianhost2026_demo_registrations_v1';
+const STORAGE_KEY='asianhost2026_demo_registrations_inr_v2';
 const PAPER_LIST=[
 {id:'5',title:'Separating Low-Pass Filtering from Decimation in Dilithium Side-Channel Profiling',authors:'Xu Li, Jiatong Tian, Bei Wang, Chenghua Wang, Weiqiang Liu and Yijun Cui'},
 {id:'9',title:'ARCHE: Hardware-Managed Pointer Provenance Propagation for Capability Architectures',authors:'Mishel Jyothis Paul, Edwin Kayang, Eric Jahns and Michel Kinsy'},
@@ -16,13 +16,13 @@ const PAPER_LIST=[
 {id:'32',title:'When Filtered Power Still Tells the Truth: Side-Channel Leakage on Obfuscated RAPL Energy Interfaces of Intel Processors',authors:'Himanshu Pandey, Arnav Geet Verma, Debapriya Basu Roy and Urbi Chatterjee'}
 ];
 const RATES=[
-{id:'ieee',name:'IEEE Member',currency:'USD',early:500,regular:600,full:true,ieee:true},
-{id:'nonieee',name:'Non-IEEE Member',currency:'USD',early:600,regular:700,full:true},
-{id:'ieee-student',name:'IEEE Member – Student',currency:'USD',early:150,regular:250,student:true,ieee:true},
-{id:'nonieee-student',name:'Non-IEEE Member – Student',currency:'USD',early:250,regular:350,student:true},
-{id:'life',name:'IEEE Life Member',currency:'USD',early:250,regular:350,ieee:true},
+{id:'ieee',name:'IEEE Member',currency:'INR',early:50000,regular:60000,full:true,ieee:true},
+{id:'nonieee',name:'Non-IEEE Member',currency:'INR',early:60000,regular:70000,full:true},
+{id:'ieee-student',name:'IEEE Member – Student',currency:'INR',early:15000,regular:25000,student:true,ieee:true},
+{id:'nonieee-student',name:'Non-IEEE Member – Student',currency:'INR',early:25000,regular:35000,student:true},
+{id:'life',name:'IEEE Life Member',currency:'INR',early:25000,regular:35000,ieee:true},
 {id:'indian-student',name:'General Participation – Indian Student',currency:'INR',fixed:2000,student:true,indian:true},
-{id:'phd-intl',name:'PhD Forum – International',currency:'USD',fixed:150,phd:true},
+{id:'phd-intl',name:'PhD Forum – International',currency:'INR',fixed:15000,phd:true},
 {id:'phd-indian',name:'PhD Forum – Indian',currency:'INR',fixed:5000,phd:true,indian:true}
 ];
 const $=id=>document.getElementById(id);
@@ -52,13 +52,13 @@ function registerOrder(){const r=currentRate(),p=PAPER_LIST.find(x=>x.id===state
 function navigate(view){['register','status','integration'].forEach(v=>$(v+'-view').classList.toggle('hidden',v!==view));document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));const preservedId=new URLSearchParams(location.search).get('id');history.replaceState(null,'',`index.html?view=${view}${view==='status'&&preservedId?'&id='+encodeURIComponent(preservedId):''}`);window.scrollTo({top:0,behavior:'smooth'});if(view==='status')autofillLookupFromQuery()}
 function autofillLookupFromQuery(){const p=new URLSearchParams(location.search);let id=p.get('id');if(id){$('lookup-id').value=id;let rec=records()[id];if(rec){$('lookup-email').value=rec.person.email;showStatus(rec)}}}
 function statusPill(rec){if(rec.status==='paid')return '<span class="status-pill">Demo payment successful</span>';if(rec.status==='failed')return '<span class="status-pill failed">Demo payment failed</span>';return '<span class="status-pill pending">Demo payment pending</span>'}
-function showStatus(rec){const r=RATES.find(x=>x.id===rec.category)||RATES[0];const total=rec.amount+(rec.balancePaid?100:0);let note=rec.status==='paid'?`Payment simulated as successful. ${rec.ieeeVerification==='awaiting_organizer_review'?'IEEE eligibility awaits review by the committee.':'This is not proof of a real registration.'}`:'No verified demo payment has been completed.';
+function showStatus(rec){const r=RATES.find(x=>x.id===rec.category)||RATES[0];const total=rec.amount+(rec.balancePaid?10000:0);let note=rec.status==='paid'?`Payment simulated as successful. ${rec.ieeeVerification==='awaiting_organizer_review'?'IEEE eligibility awaits review by the committee.':'This is not proof of a real registration.'}`:'No verified demo payment has been completed.';
 let actions='';if(rec.status!=='paid')actions+=`<button type="button" class="btn btn-primary btn-small" data-retry="${rec.id}">Retry demo payment ↗</button>`;
-if(rec.status==='paid'&&rec.category==='ieee'&&!rec.balancePaid){actions+=`<button type="button" class="btn btn-outline btn-small" data-balance="${rec.id}">Demonstrate $100 non-member balance payment</button>`;actions+=`<button type="button" class="btn btn-outline btn-small" data-verify="${rec.id}">Simulate committee verifies IEEE membership</button>`;}
-$('status-result').innerHTML=`<div class="status-box"><div class="status-head"><h3>${escapeHTML(rec.id)}</h3>${statusPill(rec)}</div><div class="status-details"><strong>${escapeHTML(rec.person.name)}</strong> · ${escapeHTML(rec.categoryName)}<br>Amount: ${currency(r,total)} ${escapeHTML(rec.currency)}${rec.balancePaid?' (includes $100 correction)':''}<br>${rec.paperId?'Paper #'+escapeHTML(rec.paperId)+' · ':''}${escapeHTML(note)}</div><div class="status-actions">${actions}</div></div>`;
+if(rec.status==='paid'&&rec.category==='ieee'&&!rec.balancePaid){actions+=`<button type="button" class="btn btn-outline btn-small" data-balance="${rec.id}">Demonstrate ₹10,000 non-member balance payment</button>`;actions+=`<button type="button" class="btn btn-outline btn-small" data-verify="${rec.id}">Simulate committee verifies IEEE membership</button>`;}
+$('status-result').innerHTML=`<div class="status-box"><div class="status-head"><h3>${escapeHTML(rec.id)}</h3>${statusPill(rec)}</div><div class="status-details"><strong>${escapeHTML(rec.person.name)}</strong> · ${escapeHTML(rec.categoryName)}<br>Amount: ${currency(r,total)} ${escapeHTML(rec.currency)}${rec.balancePaid?' (includes ₹10,000 correction)':''}<br>${rec.paperId?'Paper #'+escapeHTML(rec.paperId)+' · ':''}${escapeHTML(note)}</div><div class="status-actions">${actions}</div></div>`;
 document.querySelectorAll('[data-retry]').forEach(el=>el.onclick=()=>{location.href='checkout.html?id='+encodeURIComponent(el.dataset.retry)});
 document.querySelectorAll('[data-verify]').forEach(el=>el.onclick=()=>{let item=records()[el.dataset.verify];if(item){item.ieeeVerification='verified_by_organizer_demo';saveRecord(item);showStatus(item);showToast('Demo only: IEEE eligibility marked as reviewed.')}});
-document.querySelectorAll('[data-balance]').forEach(el=>el.onclick=()=>{const item=records()[el.dataset.balance];if(!item||item.status!=='paid'||item.category!=='ieee'||item.balancePaid)return;const id=createId('AH26-BAL-');const balance={id,kind:'balance',parentId:item.id,person:item.person,categoryName:'Other – Balance Payment (IEEE to Non-IEEE)',category:'balance',currency:'USD',amount:100,status:'pending',created:new Date().toISOString(),purpose:'balance'};if(saveRecord(balance))location.href='checkout.html?id='+encodeURIComponent(id)})}
+document.querySelectorAll('[data-balance]').forEach(el=>el.onclick=()=>{const item=records()[el.dataset.balance];if(!item||item.status!=='paid'||item.category!=='ieee'||item.balancePaid)return;const id=createId('AH26-BAL-');const balance={id,kind:'balance',parentId:item.id,person:item.person,categoryName:'Other – Balance Payment (IEEE to Non-IEEE)',category:'balance',currency:'INR',amount:10000,status:'pending',created:new Date().toISOString(),purpose:'balance'};if(saveRecord(balance))location.href='checkout.html?id='+encodeURIComponent(id)})}
 function init(){PAPER_LIST.forEach(p=>{const opt=document.createElement('option');opt.value=p.id;opt.textContent=`#${p.id} — ${p.title}`;$('paper-select').appendChild(opt)});
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.view)));
 document.querySelectorAll('[data-purpose]').forEach(b=>b.onclick=()=>updatePurpose(b.dataset.purpose));

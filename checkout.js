@@ -1,5 +1,5 @@
 'use strict';
-const STORAGE_KEY='asianhost2026_demo_registrations_v1';
+const STORAGE_KEY='asianhost2026_demo_registrations_inr_v2';
 const $=id=>document.getElementById(id);
 function currency(item){return(item.currency==='INR'?'₹':'$')+Number(item.amount).toLocaleString('en-IN',{maximumFractionDigits:2})}
 function records(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch(e){return {}}}

@@ -27,30 +27,30 @@ For an organization-managed repository, publish under the organization's GitHub 
 4. Review, agree to demo acknowledgement and click **Proceed to demo gateway**.
 5. The mock checkout shows a specific order ID, currency and fixed fee. Choose **Simulate successful payment**.
 6. The registration-status page shows the mock payment result.
-7. If the registered category was IEEE Member, use **Demonstrate $100 non-member balance payment** in Status to illustrate a supplementary charge.
+7. If the registered category was IEEE Member, use **Demonstrate ₹10,000 non-member balance payment** in Status to illustrate a supplementary charge.
 8. Use **For the Bank** to explain requirements for a live gateway integration.
 
 ## Fee configuration
 
 | Category | Early | Regular / On-site | Fixed |
 | --- | --- | --- | --- |
-| IEEE Member | $500 | $600 | — |
-| Non-IEEE Member | $600 | $700 | — |
-| IEEE Member – Student | $150 | $250 | — |
-| Non-IEEE Member – Student | $250 | $350 | — |
-| IEEE Life Member | $250 | $350 | — |
+| IEEE Member | ₹50,000 | ₹60,000 | — |
+| Non-IEEE Member | ₹60,000 | ₹70,000 | — |
+| IEEE Member – Student | ₹15,000 | ₹25,000 | — |
+| Non-IEEE Member – Student | ₹25,000 | ₹35,000 | — |
+| IEEE Life Member | ₹25,000 | ₹35,000 | — |
 | General Participation – Indian Student | — | — | ₹2,000 |
-| PhD Forum – International | — | — | $150 |
+| PhD Forum – International | — | — | ₹15,000 |
 | PhD Forum – Indian | — | — | ₹5,000 |
 
-The committee supplied these fee amounts. The 12 accepted main-conference paper IDs/titles are from [AsianHOST 2026's programme](https://www.asianhost.org/2026/program.htm); the programme is subject to organizer updates. Paper #18 is only a sample in the walkthrough; paper coverage is **not** actually verified across visitors because the site is static.
+All eight registration categories use INR as the fixed base currency. The values reflect the organizer-proposed conversion of the earlier USD prices at ₹100 per USD; they are not live FX quotes. Any optional local-currency display or dynamic currency conversion for international participants would be managed by the real payment provider. This static demonstration displays and simulates charges in INR only. The committee supplied these fee amounts. The 12 accepted main-conference paper IDs/titles are from [AsianHOST 2026's programme](https://www.asianhost.org/2026/program.htm); the programme is subject to organizer updates. Paper #18 is only a sample in the walkthrough; paper coverage is **not** actually verified across visitors because the site is static.
 
 ## Important limits
 
 - No payments are processed; there is **no Razorpay/bank integration**, merchant key, payment API or bank settlement.
-- No real registration is completed or submitted to organizers. Data is stored in browser **localStorage** only, on that device. The Check Status page works only on the same browser. Use sample data, not actual personal information.
+- No real registration is completed or submitted to organizers. Data is stored in browser **localStorage** only, on that device. The updated INR demo uses a fresh demonstration storage key, so older simulated USD transactions will not appear. The Check Status page works only on the same browser. Use sample data, not actual personal information.
 - IEEE membership numbers are not checked. The live system will send them for manual organizer verification.
-- The mock $100 balance-payment mechanism only covers a wrong **IEEE Member → Non-IEEE Member** selection; it is a simulation.
+- The mock ₹10,000 balance-payment mechanism only covers a wrong **IEEE Member → Non-IEEE Member** selection; it is a simulation.
 - The Early/Regular switch is for demonstration. In production the deadline and price must be calculated and enforced by the backend.
 - Do **not** insert real gateway public or secret credentials into client-side JavaScript or GitHub Pages.
 - Live integration requires a trusted backend (or approved serverless functions) to create fixed-amount orders, verify authenticated gateway callbacks, keep registration records, enforce one full registration per paper, and reconcile payment status. A browser redirect or static success message alone is not proof of payment.
