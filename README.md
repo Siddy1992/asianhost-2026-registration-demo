@@ -10,7 +10,7 @@ This repository contains the **participant-facing reference website** for the 11
 - **Conference programme ID:** `IIT/CEP/CON/CON/2025-2026/CS/162`
 
 > [!IMPORTANT]
-> This is a **static prototype for the development team**, not a production registration or payment service. The registration forms, payment outcomes, coupon codes and status records are simulated in the browser. No money is collected, no email is sent, no invoice is issued, and no eligibility is verified. **Do not use this prototype to collect real registrations or payments.** A backend, database, approved payment gateway and email service are required before launch.
+> This is a **static prototype for the development team**, not a production registration or payment service. The registration forms, payment outcomes, coupon codes and status records are simulated in the browser. No money is collected, no email is sent, no official invoice is issued, and no eligibility is verified. A clearly marked non-official invoice preview can be printed from a confirmed demo registration. **Do not use this prototype to collect real registrations or payments.** A backend, database, approved payment gateway and email service are required before launch.
 
 ## 1. Getting started
 
@@ -32,13 +32,13 @@ python3 -m http.server 8000
 
 Open `http://localhost:8000/` in a browser. Stop the server with `Ctrl+C`.
 
-Alternatively, open `index.html` directly, although a local HTTP server is preferable for consistent browser behavior. `checkout.html` requires a registration order created through the form, so do not open it as a standalone payment page.
+Alternatively, open `index.html` directly, although a local HTTP server is preferable for consistent browser behavior. `checkout.html` requires a registration order created through the form, so do not open it as a standalone payment page. `invoice.html` likewise needs a confirmed registration ID passed by the confirmation or status screen.
 
 **To reset demo registrations:** Clear the browser's local storage for the site, or use a private/incognito window. Registrations made in one browser are not available in another browser or on another device.
 
 ### C. Publish or update the GitHub Pages demonstration
 
-1. Keep `index.html`, `checkout.html`, `app.js`, `checkout.js`, `styles.css`, `README.md`, `.nojekyll` and `assets/` in the repository root.
+1. Keep `index.html`, `checkout.html`, `invoice.html`, `app.js`, `checkout.js`, `invoice.js`, `styles.css`, `invoice.css`, `README.md`, `.nojekyll` and `assets/` in the repository root.
 2. In GitHub, open **Settings → Pages**.
 3. Choose **Deploy from a branch**, branch **`main`**, folder **`/(root)`**, and save.
 4. After the GitHub Pages workflow completes, visit the demo URL above.
@@ -54,6 +54,9 @@ Alternatively, open `index.html` directly, although a local HTTP server is prefe
 | `app.js` | Registration categories, fees, accepted-paper list, deadline behavior, form validation, sample records, browser-local registrations and status display |
 | `checkout.html` | Checkout interface and coupon entry |
 | `checkout.js` | Simulated payment outcomes and **dummy** 100% coupon handling |
+| `invoice.html` | Printable demo invoice page, accessible only for confirmed demo registrations |
+| `invoice.js` | Reads the same browser-local registration records and renders the fee breakdown |
+| `invoice.css` | Screen and A4 print/PDF styling for the demo invoice |
 | `styles.css` | Responsive visual design |
 | `assets/` | IIT Kharagpur and AsianHOST logos |
 | `.nojekyll` | GitHub Pages configuration helper |
@@ -87,7 +90,9 @@ flowchart TD
     Q -->|Successful| R[Payment success confirmation]
     Q -->|Failed| S[Failure; retry/status lookup]
     Q -->|Pending| T[Pending; status lookup]
-    O --> U[Registration status lookup]
+    O --> V[View / print demo invoice]
+    R --> V
+    V --> U[Registration status lookup]
     R --> U
     S --> U
     T --> U
@@ -104,6 +109,8 @@ flowchart TD
 | Checkout | No coupon; simulated success | Confirmation: payment successful |
 | Checkout | No coupon; simulated failure | Confirmation: payment unsuccessful; retry possible |
 | Checkout | Cancel or unresolved payment | Pending / incomplete state; check status |
+| Confirmation (paid or complimentary) | View / print demo invoice | `invoice.html?id=...` → browser print / save as PDF |
+| Status lookup (paid or complimentary) | View / print demo invoice | Same invoice preview; no preview for failed/pending |
 | Confirmation | Check status | Registration ID + registered email lookup |
 | Status lookup | Correct ID and email | Show successful, failed, pending or complimentary outcome |
 | Status lookup | Eligible IEEE correction demo | Preview separate ₹10,000 balance-payment order |
@@ -228,9 +235,28 @@ After the backend verifies a transaction, send an email to the participant's **r
 
 Never send a success email merely because a browser returns from the payment provider. Validate the signed provider webhook/callback and reconcile transaction status first. Implement idempotent updates and email delivery retries.
 
-**Invoice notice to display:** “An invoice will be provided upon request at a later date.” This is a later administrative process; the prototype does not generate invoices.
+**Official invoice notice:** An official invoice, where applicable, will be provided separately on request by the authorized organizing/finance team. The prototype provides only a clearly marked **demo invoice preview**; it does not issue invoices.
 
-## 10. Production backend implementation guide
+## 10. Printable demo invoice preview (new)
+
+The reference website now includes **`invoice.html`**, **`invoice.js`** and **`invoice.css`**. On a **successful simulated payment** or a **100% complimentary coupon**, the confirmation and status screens display a **View / print demo invoice** link. Failed and pending registrations cannot generate an invoice preview.
+
+**How to test:**
+
+1. Run the website locally or open the deployed demo after uploading the new files.
+2. Use sample status record `AH26-SAMPLE-0001` / `avery@example.org` to open a paid example, or complete a new registration with a simulated successful payment.
+3. For a complimentary example, register and apply `AH26-WAIVER-100` at checkout.
+4. Click **View / print demo invoice** on confirmation or status.
+5. Click **Print / Save as PDF**; in the browser's print dialog, choose **Save as PDF**. The layout is optimized for A4.
+6. Attempt the same from a failed/pending registration; no invoice action should appear. Direct access to the invoice page must show an unavailable message.
+
+The preview displays conference logos, participant/billing name, participant-provided GSTIN (unverified), registration ID, **demo** invoice reference, category, fee subtotal, coupon discount, supplementary category correction where applicable, and final INR amount. A complimentary registration shows **₹0** and clearly indicates that no bank payment occurred.
+
+**Critical limitation:** The generated document is explicitly marked **“DEMO INVOICE PREVIEW — NOT A TAX INVOICE.”** It does **not** calculate GST, claim tax inclusivity/exclusivity, supply an official sequential tax invoice number, assert an IIT Kharagpur GSTIN, or constitute evidence of payment. It is based on browser-local, editable demonstration data. The invoice issuer details are illustrative and require Institute approval.
+
+**Production invoice requirements (to be confirmed with IIT Kharagpur CEP/finance):** Authorized legal issuer and registered address; GSTIN and tax applicability; taxable value/tax components and place of supply; invoice numbering and issuance date; permitted treatment of fee waivers; payment reconciliation; any required signature/authorization; secure participant access; immutable invoice records; and controlled delivery. Generate official invoices **server-side only after verified payment or approved complimentary registration**. If official invoices remain available only upon request, keep the request-and-approval workflow rather than automatically issuing tax invoices.
+
+## 11. Production backend implementation guide
 
 The source website is **not** a production system. The development team should implement:
 
@@ -240,10 +266,11 @@ The source website is **not** a production system. The development team should i
 4. **Accepted-paper registry:** editable paper list; manual Other-paper submissions flagged for review; prevent incorrect or duplicate paper coverage.
 5. **Gateway integration:** server-side payment order creation for amounts **greater than ₹0**, hosted checkout, authenticated webhook verification, reconciliation and safe retries.
 6. **Coupon management:** organizer-approved codes, scope, maximum uses, expiry, redemption ledger, atomic redemption; **₹0 orders skip the gateway**.
-7. **Email service:** success/failure/pending/complimentary templates, verified triggers, delivery logs and retry handling.
-8. **Status API:** ID + verified email/OTP, restricted response fields, throttling and privacy controls.
-9. **Organizer administration:** verify IEEE/student eligibility, approve manual papers, manage coupons and supplementary balances, review failed/pending transactions and invoice requests.
-10. **Operational checks:** test international card payments, gateway settlement in INR, callback signatures, reconciliation and email delivery before opening real registration.
+7. **Official invoice workflow:** Confirm tax and institutional rules; issue tax invoices only through the authorized finance process, with payment verification and audit history.
+8. **Email service:** success/failure/pending/complimentary templates, verified triggers, delivery logs and retry handling.
+9. **Status API:** ID + verified email/OTP, restricted response fields, throttling and privacy controls.
+10. **Organizer administration:** verify IEEE/student eligibility, approve manual papers, manage coupons and supplementary balances, review failed/pending transactions and invoice requests.
+11. **Operational checks:** test international card payments, gateway settlement in INR, callback signatures, reconciliation and email delivery before opening real registration.
 
 ### Suggested API contracts (illustrative, not present in the prototype)
 
@@ -259,7 +286,7 @@ The source website is **not** a production system. The development team should i
 
 These are recommended interfaces, not existing endpoints. The team may adapt the API names to its backend architecture.
 
-## 11. Developer acceptance checklist
+## 12. Developer acceptance checklist
 
 - [ ] Listed accepted paper can be selected and shown correctly on review.
 - [ ] **Other paper** requires both Paper ID and Paper Title; details survive review and checkout.
@@ -274,15 +301,18 @@ These are recommended interfaces, not existing endpoints. The team may adapt the
 - [ ] Supplementary ₹10,000 balance-payment order does not accept the demo waiver.
 - [ ] Successful, failed and pending payment outcomes are displayed distinctly.
 - [ ] Status lookup works for all three fictional records and same-browser registrations.
-- [ ] Invoice-on-request note is visible; no instant invoice is promised.
+- [ ] Confirmed paid and complimentary registrations show a printable **demo invoice preview** with correct fee/waiver amounts.
+- [ ] Failed and pending registrations cannot generate a demo invoice.
+- [ ] The preview is visibly **NOT A TAX INVOICE** and does not invent GST or issuer credentials.
+- [ ] Official invoice-on-request process remains separate and requires finance authorization.
 - [ ] Production sends verified outcome emails; no browser-only success assertions.
 - [ ] Production cannot be tricked by browser clock changes, altered fee requests, replayed coupons or repeated payment callbacks.
 - [ ] Production status lookup cannot disclose another participant's information.
 
-## 12. Handoff instructions for the development team
+## 13. Handoff instructions for the development team
 
 1. **Clone this repository** and run the site locally using Section 1.
-2. **Review the deployed demo** and test each route in Sections 3 and 11.
+2. **Review the deployed demo** and test each route in Sections 3, 10 and 12.
 3. **Preserve the existing UI and participant journey** unless the organizing committee approves a change.
 4. **Replace the demo-only logic** in `app.js` and `checkout.js` with backend API calls and the approved gateway.
 5. **Connect a database and transactional email service**, then implement organizer verification and coupon controls.
