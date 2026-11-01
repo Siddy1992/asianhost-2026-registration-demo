@@ -1,28 +1,23 @@
-# AsianHOST 2026 — Conference Registration Portal
+# AsianHOST 2026 — Registration Website
 
-**Developer handoff | Source code + workflow + setup instructions**
+**Source code, local setup, registration workflow, and production implementation guide**
 
-This repository contains the **participant-facing reference website** for the 11th Asian Hardware Oriented Security and Trust Symposium (AsianHOST 2026), 11–13 December 2026, at IIT Kharagpur Research Park, Rajarhat, Kolkata.
+This repository is the reference implementation of the participant-facing registration website for **AsianHOST 2026**, taking place **11–13 December 2026** at **IIT Kharagpur Research Park, Rajarhat, Kolkata**. It shows the intended visual design and participant journey: selecting a registration category, associating an accepted paper, entering participant details, reviewing the fee, checking out, receiving a simulated confirmation, looking up registration status, and printing a demonstration invoice.
 
-- **Demo site:** https://siddy1992.github.io/asianhost-2026-registration-demo/
-- **Source repository:** https://github.com/Siddy1992/asianhost-2026-registration-demo
-- **Official conference website:** https://www.asianhost.org/2026/
-- **Conference programme ID:** `IIT/CEP/CON/CON/2025-2026/CS/162`
+| Resource | Address |
+|---|---|
+| Registration website demo | https://siddy1992.github.io/asianhost-2026-registration-demo/ |
+| GitHub source repository | https://github.com/Siddy1992/asianhost-2026-registration-demo |
+| Conference website | https://www.asianhost.org/2026/ |
+| IIT Kharagpur CEP programme ID | `IIT/CEP/CON/CON/2025-2026/CS/162` |
 
-> [!IMPORTANT]
-> This is a **static prototype for the development team**, not a production registration or payment service. The registration forms, payment outcomes, coupon codes and status records are simulated in the browser. No money is collected, no email is sent, no official invoice is issued, and no eligibility is verified. A clearly marked non-official invoice preview can be printed from a confirmed demo registration. **Do not use this prototype to collect real registrations or payments.** A backend, database, approved payment gateway and email service are required before launch.
+> **Read before deploying:** This is a **static demonstration**, not a functioning registration/payment service. Browser-local data and sample records simulate the backend. No real money is charged, no confirmation emails are delivered, no participant identity or eligibility is authenticated, and no official invoice is issued. A production launch requires a backend, persistent database, approved payment gateway, notification service, and finance/organizer approval of business rules. The printable invoice is explicitly a **demo preview, not a tax invoice or payment receipt**.
 
-## 1. Getting started
+## 1. Installation and running the website
 
-### A. View the deployed demonstration
+### 1.1 Run locally
 
-Open the [GitHub Pages demo](https://siddy1992.github.io/asianhost-2026-registration-demo/).
-
-The site is intended to demonstrate the desired appearance, field order, validation, registration journey, coupon behavior, status lookup and confirmation screens.
-
-### B. Run the source locally
-
-The project uses plain HTML, CSS and JavaScript. **No Node.js, npm, build process or external database is required for the prototype.**
+The source consists of HTML, CSS, and vanilla JavaScript. There are **no package dependencies, build steps, npm commands, or environment variables** for the demonstration.
 
 ```bash
 git clone https://github.com/Siddy1992/asianhost-2026-registration-demo.git
@@ -30,293 +25,327 @@ cd asianhost-2026-registration-demo
 python3 -m http.server 8000
 ```
 
-Open `http://localhost:8000/` in a browser. Stop the server with `Ctrl+C`.
+Open **http://localhost:8000/**. Stop the server with `Ctrl+C`. You can also serve the files with any static web server. A local HTTP server is recommended over opening `index.html` directly as a `file://` URL.
 
-Alternatively, open `index.html` directly, although a local HTTP server is preferable for consistent browser behavior. `checkout.html` requires a registration order created through the form, so do not open it as a standalone payment page. `invoice.html` likewise needs a confirmed registration ID passed by the confirmation or status screen.
+The checkout and invoice pages require a registration reference passed from the main website. Start at `index.html` rather than opening `checkout.html` or `invoice.html` directly.
 
-**To reset demo registrations:** Clear the browser's local storage for the site, or use a private/incognito window. Registrations made in one browser are not available in another browser or on another device.
+### 1.2 Publish the demonstration on GitHub Pages
 
-### C. Publish or update the GitHub Pages demonstration
+1. Commit the source files to the repository's `main` branch, preserving the folder structure in Section 2.
+2. Go to **GitHub → Settings → Pages**.
+3. Set **Source: Deploy from a branch**, **Branch: `main`**, **Folder: `/(root)`**.
+4. Save and wait for the Pages deployment to finish.
+5. Open the demonstration URL shown above. Subsequent commits to `main` update the hosted static site.
 
-1. Keep `index.html`, `checkout.html`, `invoice.html`, `app.js`, `checkout.js`, `invoice.js`, `styles.css`, `invoice.css`, `README.md`, `.nojekyll` and `assets/` in the repository root.
-2. In GitHub, open **Settings → Pages**.
-3. Choose **Deploy from a branch**, branch **`main`**, folder **`/(root)`**, and save.
-4. After the GitHub Pages workflow completes, visit the demo URL above.
-5. To update the demo, commit changed source files to `main` and allow Pages to redeploy.
+**GitHub Pages cannot act as the production backend.** It cannot securely store registration records, keep payment gateway secrets, process verified gateway webhooks, enforce server-side pricing, send transactional emails, or issue authorized invoices.
 
-**GitHub Pages hosts only the static demo.** It cannot securely generate payment orders, verify gateway callbacks, send confirmation emails or store a shared registration database.
+### 1.3 Reset the demonstration
 
-## 2. Repository layout
+The browser stores registration records under the `localStorage` key `asianhost2026_demo_registrations_inr_v2`. To start again, clear the site's browser storage or use a private browsing session. Data is **not shared across browsers, devices, or participants**. The fictional sample records described in Section 9 remain available even after clearing local storage.
 
-| File or directory | Purpose |
-|---|---|
-| `index.html` | Registration steps, participant details, review, confirmation and status lookup screens |
-| `app.js` | Registration categories, fees, accepted-paper list, deadline behavior, form validation, sample records, browser-local registrations and status display |
-| `checkout.html` | Checkout interface and coupon entry |
-| `checkout.js` | Simulated payment outcomes and **dummy** 100% coupon handling |
-| `invoice.html` | Printable demo invoice page, accessible only for confirmed demo registrations |
-| `invoice.js` | Reads the same browser-local registration records and renders the fee breakdown |
-| `invoice.css` | Screen and A4 print/PDF styling for the demo invoice |
-| `styles.css` | Responsive visual design |
-| `assets/` | IIT Kharagpur and AsianHOST logos |
-| `.nojekyll` | GitHub Pages configuration helper |
-| `README.md` | Setup, business rules, page transitions, test data and production requirements |
+## 2. Source files and responsibilities
 
-The frontend is intentionally framework-free. Developers may preserve the UI while connecting it to their chosen production framework/backend.
+All paths are relative to the repository root.
 
-## 3. End-to-end participant journey
+| File | Role | Developer notes |
+|---|---|---|
+| `index.html` | Main registration UI: category selection, paper details, participant form, review, confirmation, and status lookup | Defines screen sections and form element IDs used by `app.js` |
+| `app.js` | Registration logic and state | Contains `PAPER_LIST`, `RATES`, early deadline, validation, record creation, sample registrations, confirmation and status rendering |
+| `styles.css` | Registration and confirmation styling | Shared visual appearance of the main site |
+| `checkout.html` | Checkout screen | Shows order summary, coupon field and simulated payment actions |
+| `checkout.js` | Checkout state transitions | Validates sample coupon codes, records 100% waivers, simulates paid/failed outcomes and navigates to confirmation |
+| `invoice.html` | Printable invoice-preview page | Displays the branded document layout and print control |
+| `invoice.js` | Invoice-preview data and calculations | Reads the registration record, checks confirmed status, calculates fee/discount presentation, invokes browser printing |
+| `invoice.css` | Invoice page styling | Includes screen styling and A4 print/PDF layout |
+| `assets/asianhost-logo.png` | AsianHOST logo | Used in registration and invoice presentation |
+| `assets/iitkgp-logo.png` | IIT Kharagpur logo | Used in registration and invoice presentation |
+| `.nojekyll` | Static hosting helper | Allows GitHub Pages to serve files without Jekyll processing |
+| `README.md` | Developer specification | Setup, screen transitions, fees, field rules, demo testing and production integration |
+
+The HTML pages reference their respective CSS/JavaScript files using relative paths. Keep these names and paths intact unless you update their references consistently.
+
+## 3. Page structure and navigation
+
+The registration journey spans three HTML pages. The main page (`index.html`) contains multiple views and a three-step form; it does **not** use a separate HTML file for every form step.
 
 ```mermaid
 flowchart TD
-    A[Open registration portal] --> B{Participation type}
-    B --> C[Paper author]
-    B --> D[General attendee]
-    B --> E[PhD Forum]
-    C --> F{Paper listed?}
-    F -->|Yes| G[Select accepted paper]
-    F -->|No| H[Other: enter Paper ID and Title]
-    G --> I[Choose eligible fee category]
-    H --> I
-    D --> I
-    E --> I
-    I --> J[Participant details]
-    J --> K[Review and confirm]
-    K --> L[System generates Registration ID]
-    L --> M[Checkout: optional coupon]
-    M --> N{Valid 100% waiver?}
-    N -->|Yes| O[₹0 complimentary confirmation; skip bank]
-    N -->|No| P[Payment gateway / simulated payment]
-    P --> Q{Verified payment outcome}
-    Q -->|Successful| R[Payment success confirmation]
-    Q -->|Failed| S[Failure; retry/status lookup]
-    Q -->|Pending| T[Pending; status lookup]
-    O --> V[View / print demo invoice]
-    R --> V
-    V --> U[Registration status lookup]
-    R --> U
-    S --> U
-    T --> U
+    A[Open index.html] --> B{Participation type}
+    B -->|Author| C[Select accepted paper or Other]
+    B -->|Attendee| D[Choose registration category]
+    B -->|PhD Forum| E[Enter Forum reference]
+    C --> D
+    E --> D
+    D --> F[Step 2: Participant details]
+    F --> G[Step 3: Review and confirm]
+    G --> H[Create Registration ID and pending record]
+    H --> I[checkout.html?id=...]
+    I --> J{Valid 100% coupon?}
+    J -->|Yes| K[Confirmed complimentary; ₹0; no gateway]
+    J -->|No| L{Simulated payment outcome}
+    L -->|Success| M[Confirmed paid]
+    L -->|Failure| N[Failed; retry available]
+    L -->|Cancel / no outcome| O[Pending]
+    K --> P[index.html?view=confirmation&id=...]
+    M --> P
+    N --> P
+    O --> P
+    P --> Q[index.html?view=status]
+    P --> R[invoice.html?id=...]
+    Q --> R
 ```
 
-### Page/screen transition reference
+**Important:** The invoice link is shown only for registrations marked `paid` in the demonstration. This includes complimentary registrations whose fee was waived. Failed and pending registrations do not receive an invoice-preview link.
 
-| From | User action / condition | Next screen / system behavior |
-|---|---|---|
-| Registration — Step 1 | Select purpose, paper, fee category and period; continue | Participant details — Step 2 |
-| Participant details — Step 2 | Enter required information; submit | Review — Step 3 |
-| Review — Step 3 | Confirm details; proceed | Registration ID created; open `checkout.html?id=...` |
-| Checkout | Valid dummy 100% coupon | Mark complimentary; **no bank redirect**; confirmation |
-| Checkout | No coupon; simulated success | Confirmation: payment successful |
-| Checkout | No coupon; simulated failure | Confirmation: payment unsuccessful; retry possible |
-| Checkout | Cancel or unresolved payment | Pending / incomplete state; check status |
-| Confirmation (paid or complimentary) | View / print demo invoice | `invoice.html?id=...` → browser print / save as PDF |
-| Status lookup (paid or complimentary) | View / print demo invoice | Same invoice preview; no preview for failed/pending |
-| Confirmation | Check status | Registration ID + registered email lookup |
-| Status lookup | Correct ID and email | Show successful, failed, pending or complimentary outcome |
-| Status lookup | Eligible IEEE correction demo | Preview separate ₹10,000 balance-payment order |
+| Screen / view | Where it lives | User action | Result |
+|---|---|---|---|
+| Registration Step 1 | `index.html`, `register` view | Choose purpose, paper, fee category and rate period | Step 2 after validation |
+| Registration Step 2 | `index.html`, `register` view | Enter participant/billing information | Step 3 after validation |
+| Registration Step 3 | `index.html`, `register` view | Review details and accept confirmation checkbox | Creates pending record and Registration ID; opens checkout |
+| Checkout | `checkout.html?id=<registration-id>` | Apply valid waiver coupon | Fee becomes ₹0; registration confirmed; bank/payment screen skipped |
+| Checkout | `checkout.html?id=<registration-id>` | Simulate success | Status becomes `paid`; confirmation view |
+| Checkout | `checkout.html?id=<registration-id>` | Simulate failure | Status becomes `failed`; confirmation view; retry possible |
+| Checkout | `checkout.html?id=<registration-id>` | Cancel/return | Remains pending unless previously resolved; confirmation view |
+| Confirmation | `index.html?view=confirmation&id=<registration-id>` | View outcome; check status; optionally print preview | Status screen or invoice page |
+| Status lookup | `index.html?view=status` | Supply ID and registered email | Shows matching record and available actions |
+| Invoice preview | `invoice.html?id=<registration-id>` | Print / Save as PDF | Browser print dialog, optimized for A4 |
 
-The reference site shows simulated payment buttons rather than a real bank page. In production, a positive payable amount must go through the approved payment provider.
+The URL examples describe the demonstration's current navigation. Production may use other routes if the same behavior is preserved.
 
-## 4. Participation types and paper selection
+## 4. Registration types and accepted-paper rules
 
-**Paper author:** Choose a paper from the accepted-paper dropdown. If it is missing, select **“Other — my accepted paper is not listed”** and provide both **Paper ID** and **Paper Title** (mandatory). The manual entry is saved with `paperSource: "manual"` and `paperVerification: "pending_organizer_review"` for subsequent organizer validation. This option should not block an otherwise valid author from proceeding.
+### 4.1 Paper author
 
-An accepted paper must be covered by **at least one full registration** in the **IEEE Member** or **Non-IEEE Member** category. Student, IEEE Life Member, PhD Forum and General Participation – Indian Student categories do **not** satisfy that mandatory full-registration coverage. The organizer must verify that each accepted paper is appropriately covered; a manually entered paper must not automatically be treated as verified.
+The author selects an accepted paper from the dropdown. The list is defined in `PAPER_LIST` in `app.js`; it is reference data, not a live connection to a paper-management system.
 
-**General attendee:** Select an eligible non-PhD registration category and enter participant details.
+If the paper is absent, select **Other — my accepted paper is not listed**. Two fields appear:
 
-**PhD Forum participant:** Enter the PhD Forum submission/acceptance reference and select the Indian or International PhD Forum fee category. The PhD Forum fixed-fee categories do **not** have the main-conference early-registration cutoff. The intended policy permits registration/payment even on the poster-session day, subject to actual on-site payment arrangements.
+- **Paper ID** — mandatory.
+- **Paper Title** — mandatory.
 
-## 5. INR registration fee schedule
+The form cannot proceed until both are provided. The registration stores `paperSource: "manual"` and `paperVerification: "pending_organizer_review"`; the organizer must verify these details against accepted papers. Selecting an existing listed paper stores `paperSource: "listed"`.
 
-| Category | Early | Regular / on-site | Notes |
+At least **one full IEEE Member or Non-IEEE Member registration per accepted paper** is required. When an author checks the box indicating that their registration covers this mandatory requirement, the interface restricts fee selection to these two full categories. An author not covering the paper may select another eligible non-PhD category. Organizers must enforce paper coverage in the production database, including verification of manual entries and prevention of duplicate or incorrect coverage.
+
+### 4.2 General attendee
+
+General attendees choose an eligible non-PhD category. Student, Indian-only and IEEE eligibility checks apply according to the category selected.
+
+### 4.3 PhD Forum
+
+PhD Forum participants enter a submission/acceptance reference and choose the **PhD Forum – Indian** or **PhD Forum – International** fixed-fee category. These categories are not affected by the early-registration cutoff. The operational plan allows PhD Forum registration/payment on the poster-session day, subject to the actual on-site collection arrangements and committee confirmation.
+
+## 5. Registration categories, fees and deadline
+
+All amounts are denominated in **Indian rupees (INR)**.
+
+| Category | Early registration | Regular/on-site | Conditions |
 |---|---:|---:|---|
-| IEEE Member | ₹50,000 | ₹60,000 | Full paper coverage eligible; IEEE number required |
-| Non-IEEE Member | ₹60,000 | ₹70,000 | Full paper coverage eligible |
-| IEEE Member – Student | ₹15,000 | ₹25,000 | IEEE number and student verification |
-| Non-IEEE Member – Student | ₹25,000 | ₹35,000 | Student verification |
-| IEEE Life Member | ₹25,000 | ₹35,000 | IEEE verification |
-| General Participation – Indian Student | ₹2,000 fixed | ₹2,000 fixed | Indian student eligibility |
-| PhD Forum – International | ₹15,000 fixed | ₹15,000 fixed | PhD Forum; no early cutoff |
-| PhD Forum – Indian | ₹5,000 fixed | ₹5,000 fixed | Indian PhD Forum; no early cutoff |
+| IEEE Member | ₹50,000 | ₹60,000 | IEEE number; eligible for full-paper coverage |
+| Non-IEEE Member | ₹60,000 | ₹70,000 | Eligible for full-paper coverage |
+| IEEE Member – Student | ₹15,000 | ₹25,000 | IEEE number and student declaration |
+| Non-IEEE Member – Student | ₹25,000 | ₹35,000 | Student declaration |
+| IEEE Life Member | ₹25,000 | ₹35,000 | IEEE number/verification |
+| General Participation – Indian Student | ₹2,000 fixed | ₹2,000 fixed | Indian participant and student declaration |
+| PhD Forum – International | ₹15,000 fixed | ₹15,000 fixed | PhD Forum reference |
+| PhD Forum – Indian | ₹5,000 fixed | ₹5,000 fixed | Indian participant and PhD Forum reference |
 
-**Early registration deadline:** **15 November 2026, 11:59:59 p.m. IST**. From **16 November 2026, 12:00:00 a.m. IST**, the early option is disabled and only regular/on-site pricing remains selectable for time-dependent categories. Fixed-fee categories do not change price. The prototype uses the browser clock; **production must enforce the deadline on the server** at price quotation and order creation, including when an old browser tab remains open.
+**Early-registration cutoff:** **15 November 2026 at 23:59:59 IST**. From **16 November 2026 at 00:00:00 IST**, the interface disables early pricing and selects regular/on-site pricing for time-dependent categories. Fixed-fee categories remain unchanged.
 
-**Special supplementary payment:** An organizer-authorized **₹10,000** balance payment may be required when an IEEE Member registration must be corrected to Non-IEEE Member. This is a separate correction order, not a public ninth registration category. The current demo exposes a preview action for eligible paid IEEE registrations; production must restrict creation to authorized organizers.
+`app.js` uses `REGULAR_START_MS = Date.parse('2026-11-16T00:00:00+05:30')`, checks the browser clock, and rechecks when the tab regains focus and before checkout. **The production server must independently calculate the correct price and reject expired early-rate orders**, regardless of browser clock or cached page state.
 
-**Currency:** All listed base amounts are in INR. Any conversion presented to international cardholders depends on the actual gateway and issuer. Do not promise fixed exchange rates or zero conversion fees.
+**Supplementary category correction:** An IEEE Member registration that must be corrected to Non-IEEE Member may require an organizer-authorized **₹10,000** balance payment. The demonstration exposes a preview action on an eligible confirmed IEEE registration and creates a separate `kind: "balance"` order. This is **not a ninth public registration category**. In production, only authorized organizers should create such orders, and the amount/policy must be verified before collection.
 
-## 6. Participant information and validation
+## 6. Participant information and review
 
-| Field | Required? | Notes |
+| Field | Requirement | How it is used |
 |---|---|---|
-| Full name | Yes | As on official ID |
-| Email | Yes | Used for confirmation and status lookup |
-| Phone | Yes | Include country code |
-| Institution/organization | Yes | Participant affiliation |
-| Country and city | Yes | Country affects Indian-only eligibility |
-| IEEE membership number | Conditional | Required for IEEE Member, IEEE Member – Student, IEEE Life Member |
-| Student declaration | Conditional | Required for student categories; verify evidence in production |
-| Accepted paper ID and title | Author only | Dropdown or mandatory Other-paper manual entry |
-| PhD Forum reference | PhD Forum only | Submission/acceptance reference |
-| Visa/invitation-letter assistance | Optional | International participants |
-| Billing details / GSTIN | Optional | For subsequent invoice requests |
+| Full name | Required | Registration identity and confirmation |
+| Email address | Required | Status lookup and intended notification recipient |
+| Phone | Required | Participant contact; include country code |
+| Institution/organization | Required | Affiliation and invoice preview |
+| Country and city | Required | Address and Indian-category eligibility |
+| IEEE membership number | Conditional | Required for IEEE categories; format checked in demo, actual membership verified by organizer |
+| Student declaration | Conditional | Required for student categories; enrollment evidence checked in production |
+| Paper ID/title | Conditional | Author paper selection or Other-paper entry |
+| PhD Forum reference | Conditional | PhD Forum participation |
+| Visa/invitation assistance | Optional | International participants |
+| Billing name and GSTIN | Optional | Displayed in invoice preview; GSTIN is not authenticated |
 
-The review screen must show the participant's details, participation type, selected paper where relevant, category, applicable fee and registration period. Participants should be able to go back and correct details before checkout.
+`app.js` performs form validation, selects eligible categories and builds the review summary. The review screen shows participation type, category, paper association where applicable, participant details and the current fee. The participant must confirm the details before checkout.
 
-## 7. Automatic Registration ID
+**Production:** Validate all fields on the server, confirm IEEE/student eligibility and any Indian-only restrictions, and avoid treating user-entered paper IDs or GSTINs as verified.
 
-The website automatically generates a registration reference when the participant confirms the review and proceeds to checkout. The participant **does not enter an ID manually**.
+## 7. Registration ID and browser-local data
 
-- **Current prototype:** Generates a browser-side reference with an `AH26-` prefix and a random suffix. It is stored in the browser's local storage.
-- **Production:** Generate a **database-enforced unique** registration reference, such as `AH26-000123`, with a unique constraint. The sequence/example is illustrative, not the exact current prototype format.
-- **Persistence:** Keep the same registration ID across failed attempts and retries. Use separate provider transaction IDs for each actual payment attempt.
-- **Display:** Show the registration ID on confirmation, email notifications and status lookup. A 100% coupon registration also receives an ID despite having no bank transaction.
+After the participant confirms the review screen, `app.js` creates a record with an automatically generated `AH26-` registration reference, initial `status: "pending"`, and the chosen fee. The reference is generated client-side for demonstration and saved to browser `localStorage`.
 
-## 8. Checkout and coupon handling
+A typical stored record has this shape (illustrative; optional fields vary by registration type):
 
-The checkout page displays the participant, category, registration reference and amount due. Coupon entry occurs **before** any bank/payment gateway redirection.
+```json
+{
+  "id": "AH26-EXAMPLE01",
+  "kind": "registration",
+  "purpose": "author",
+  "period": "early",
+  "category": "ieee",
+  "categoryName": "IEEE Member",
+  "currency": "INR",
+  "amount": 50000,
+  "paperId": "5",
+  "paperTitle": "Example accepted paper",
+  "paperSource": "listed",
+  "coversPaper": true,
+  "person": {"name": "Example Registrant", "email": "example@example.org"},
+  "status": "pending"
+}
+```
 
-### Dummy coupons in this repository
+The shared storage key is **`asianhost2026_demo_registrations_inr_v2`** in `app.js`, `checkout.js`, and `invoice.js`. Checkout changes `status`, `amount` and any coupon fields in the same record; the confirmation and invoice pages then read that record. A successful complimentary registration is represented by `status: "paid"` together with `paymentMethod: "complimentary_coupon"`, `amount: 0`, and the coupon/discount fields. Here `paid` means *confirmed in the demo*; no funds are transferred for a waiver.
 
-| Code | Demo discount | Demo behavior |
+**Production:** Generate a unique ID on the backend with a database uniqueness constraint (e.g. `AH26-000123`). Keep the same registration ID for retries and associate distinct payment attempt IDs. Do not use browser-local data as the authoritative registration database. Keep public registration references distinct from payment-provider transaction identifiers.
+
+## 8. Checkout, coupons and payment state
+
+`checkout.html` reads the order from the `id` URL parameter. `checkout.js` looks it up in local storage and displays the participant, category and payable INR amount. If no order exists, the payment controls are disabled.
+
+### Coupon codes used by the demonstration
+
+| Code | Discount | Result |
 |---|---:|---|
-| `AH26-WAIVER-100` | 100% | ₹0 payable; complimentary confirmation |
-| `ASIANHOST-GUEST` | 100% | ₹0 payable; complimentary confirmation |
-| `PHD26-FREE` | 100% | ₹0 payable; complimentary confirmation |
+| `AH26-WAIVER-100` | 100% | Complimentary confirmed registration; ₹0 payable |
+| `ASIANHOST-GUEST` | 100% | Complimentary confirmed registration; ₹0 payable |
+| `PHD26-FREE` | 100% | Complimentary confirmed registration; ₹0 payable |
 
-In this prototype, all three codes work for normal registration categories, regardless of the code's label. They do **not** apply to supplementary balance-payment orders. The demo coupon data is intentionally visible in `checkout.js` so developers can test the flow.
+The codes are intentionally public in `checkout.js` for testing. They work for normal registration categories in this demonstration; the code labels do not restrict them to a particular category. **They do not apply to `kind: "balance"` orders.**
 
-**100% waiver transition:**
-1. Participant creates registration and opens checkout.
-2. Participant enters a valid demo coupon and clicks **Apply**.
-3. Original fee and 100% discount are recorded; final amount becomes **₹0**.
-4. Registration is marked confirmed/complimentary.
-5. The page opens the success confirmation **without redirecting to the bank**.
-6. The status lookup shows **Registration confirmed · Fee waived**.
+When a valid coupon is applied, the browser stores the original fee, discount, code and final amount of ₹0; marks the registration confirmed; and goes straight to the confirmation screen. **There is no gateway redirect or payment attempt.** Invalid coupons display an error and leave the normal simulated payment path available.
 
-An invalid coupon produces an error and leaves the normal payment path available. A valid 100% waiver should never create a real payment-gateway transaction.
+The checkout page also offers simulated **successful**, **failed**, and **cancel/return** actions. A successful simulated payment marks the order `paid`; failure marks it `failed`; cancellation leaves it pending. These buttons **do not charge a card**.
 
-> [!CAUTION]
-> **Never use these public demo codes as real production coupons.** Production coupons must be created and validated server-side with eligibility, validity dates, limits, authorized issuance, atomic redemption, audit records and protection against reuse/abuse. A waiver for an author covering a paper must still satisfy the committee's full-registration approval policy.
-
-## 9. Payment outcomes, status lookup and participant emails
-
-### Transaction outcomes
-
-| Status | Participant sees | Backend responsibility |
+| Registration state | Meaning in the demonstration | Participant action |
 |---|---|---|
-| Paid success | Payment successful, registration reference and amount | Verify gateway signature/status, order and amount; confirm registration |
-| 100% waiver | Registration confirmed — fee waived; ₹0 | Confirm complimentary registration without gateway order |
-| Failed | Payment unsuccessful; retry or check status | Record failed attempt; allow safe retry |
-| Pending / incomplete | Payment pending; check status | Reconcile provider status before confirming |
-| Not found | Generic no-match message | Avoid exposing another participant's information |
+| `pending` | Registration exists; payment not confirmed | Check status or return to checkout |
+| `paid` (normal) | Simulated payment success | View confirmation/status/invoice preview |
+| `paid` + `complimentary_coupon` | Approved 100% waiver in demo | View confirmation/status/invoice preview; no bank step |
+| `failed` | Simulated payment failure | Retry checkout or check status |
 
-**Status lookup:** Participants enter **Registration ID + registered email**. The prototype can look up the fictional sample records and registrations created in the **same browser**. The live portal must query the shared database; ideally add rate limiting and email verification or an OTP/magic link before revealing personal details.
+**Production:** Coupons must be verified and redeemed server-side, with expiry, scope, usage limits, organizer authorization, atomic redemption and audit logs. Public JavaScript must never be the source of valid real coupons. For a nonzero amount, create a payment-provider order on the server and verify the provider's signed webhook/callback, order reference, amount and currency before confirming payment. Handle duplicate callbacks idempotently and reconcile pending payments. A confirmed ₹0 waiver must skip payment-order creation.
 
-### Built-in fictional lookup records
+## 9. Confirmation, status lookup and sample records
 
-| Registration ID | Registered email | Outcome |
+The confirmation view is rendered by `app.js` at `index.html?view=confirmation&id=...`. It displays the registration reference, participant, category, amount, coupon information where applicable, and the appropriate successful/failed/pending message.
+
+The **Check Status** view accepts the **Registration ID and registered email address**. The lookup uses the fictional built-in records and same-browser local registrations. It does not query a remote server. For a confirmed registration, the status view offers an invoice-preview link; for an eligible confirmed IEEE Member record, it may also show the supplementary-balance demonstration action.
+
+| Sample Registration ID | Sample email | Simulated status |
 |---|---|---|
 | `AH26-SAMPLE-0001` | `avery@example.org` | Successful |
 | `AH26-SAMPLE-0002` | `jordan@example.org` | Failed |
 | `AH26-SAMPLE-0003` | `sam@example.org` | Pending |
 
-### Emails (production requirement, not implemented in this demo)
+The sample records are defined in `app.js`; the paid sample is also available to `invoice.js` for a printable example.
 
-After the backend verifies a transaction, send an email to the participant's **registered email address**.
+**Production:** Store and query registrations in a shared database. Use rate limiting, generic no-match responses, and appropriate email verification/OTP or authenticated access to protect participant information. A registration reference alone must not expose private data.
 
-| Event | Suggested subject | Include |
+## 10. Invoice preview and print/PDF behavior
+
+The invoice screen is implemented by `invoice.html`, `invoice.js`, and `invoice.css`.
+
+1. Complete a registration with a simulated successful payment **or** apply a valid 100% coupon; alternatively use the successful sample record from Section 9.
+2. On confirmation or status, choose **View / print demo invoice**.
+3. The site opens `invoice.html?id=<registration-id>`.
+4. `invoice.js` reads the registration record, requires `status: "paid"` and INR currency, and renders the document.
+5. Click **Print / Save as PDF** and choose the browser's PDF destination. `invoice.css` provides A4 print styling.
+
+The document includes the AsianHOST/IIT Kharagpur logos, participant/billing details, unverified participant-provided GSTIN (if present), registration ID, an illustrative `DEMO-INV-<registration-id>` reference, category, fee, discount, and final INR amount. Complimentary registrations display a **100% discount and ₹0**. An eligible paid registration with a completed supplementary balance order can show the ₹10,000 correction line.
+
+The page refuses to render an invoice preview if the registration is absent, pending, failed, a standalone balance order, or not denominated in INR. It is explicitly labeled **“DEMO INVOICE PREVIEW — NOT A TAX INVOICE.”** The issuer details are illustrative; no GST, statutory invoice number, tax-inclusive/exclusive determination, or legal receipt is generated. Browser-local data is not proof of payment.
+
+**Official invoices:** The intended participant-facing notice is that an official invoice, where applicable, is available **upon request at a later date**. The organizing/CEP finance team must confirm the authorized issuer, address, GSTIN, place-of-supply/tax treatment, numbering, billing details, issuance rules and any applicable treatment of complimentary registrations. If official invoices are issued, generate and record them only through an approved, server-side finance workflow after verifying payment or organizer-approved waiver. The demonstration preview must not be represented as an official invoice.
+
+## 11. Email notifications and organizer administration
+
+The demonstration displays the expected notification messages but **does not send email**. The production system should send status-dependent messages to the participant's registered email after a trusted backend state transition.
+
+| Event | Example subject | Contents |
 |---|---|---|
-| Paid success | `AsianHOST 2026 — Registration Payment Successful — [ID]` | ID, name, category, amount paid, provider reference, status link |
-| 100% waiver | `AsianHOST 2026 — Complimentary Registration Confirmed — [ID]` | ID, name, category, original fee, discount, ₹0 payable, status link |
-| Payment failure | `AsianHOST 2026 — Registration Payment Unsuccessful — [ID]` | ID, attempted amount, status link, retry/support instructions |
-| Pending | `AsianHOST 2026 — Registration Payment Pending — [ID]` | ID, current status and status-check link |
+| Verified paid registration | `AsianHOST 2026 — Registration Payment Successful — [ID]` | Registration ID, participant, category, amount, payment reference, status link |
+| Complimentary waiver | `AsianHOST 2026 — Complimentary Registration Confirmed — [ID]` | Registration ID, category, original fee, discount, ₹0 payable, status link |
+| Failed payment | `AsianHOST 2026 — Registration Payment Unsuccessful — [ID]` | Registration ID, failure status, retry/status link |
+| Pending payment | `AsianHOST 2026 — Registration Payment Pending — [ID]` | Registration ID, pending status, status link |
 
-Never send a success email merely because a browser returns from the payment provider. Validate the signed provider webhook/callback and reconcile transaction status first. Implement idempotent updates and email delivery retries.
+An organizer-facing backend should support maintaining the accepted-paper list, checking manual paper entries, verifying IEEE membership/student eligibility, approving fee waivers, managing coupon limits, creating authorized supplementary payment requests, reconciling gateway transactions, monitoring email delivery, and handling invoice requests. None of these organizer operations is securely implemented by the static demonstration.
 
-**Official invoice notice:** An official invoice, where applicable, will be provided separately on request by the authorized organizing/finance team. The prototype provides only a clearly marked **demo invoice preview**; it does not issue invoices.
+## 12. Production implementation map
 
-## 10. Printable demo invoice preview (new)
+Keep the demonstrated screens and overall participant journey while replacing browser-only state with trusted services.
 
-The reference website now includes **`invoice.html`**, **`invoice.js`** and **`invoice.css`**. On a **successful simulated payment** or a **100% complimentary coupon**, the confirmation and status screens display a **View / print demo invoice** link. Failed and pending registrations cannot generate an invoice preview.
+| Component | Demonstration source | Production responsibility |
+|---|---|---|
+| Paper list and author eligibility | `app.js`: `PAPER_LIST`, `allowedRates()`, `validateStep1()` | Accepted-paper database; paper coverage validation; manual-entry review |
+| Fee and cutoff | `app.js`: `RATES`, `REGULAR_START_MS`, `currentAmount()` | Authoritative INR fee calculation and IST cutoff on server |
+| Participant form | `index.html`, `app.js`: `validateStep2()`, `collectPerson()` | Server validation, persistence, eligibility verification |
+| Registration ID | `app.js`: `createId()`, `registerOrder()` | Database-generated unique reference, stable across retries |
+| Coupon redemption | `checkout.js`: `SAMPLE_COUPONS` | Secure coupon registry, authorization, limits and atomic redemption |
+| Payment | `checkout.html`, `checkout.js` | Approved gateway order creation, hosted checkout, verified webhook, reconciliation |
+| Confirmation/status | `app.js`: `renderConfirmationFromQuery()`, `showStatus()` | Authenticated status API and protected participant data |
+| Invoice preview | `invoice.html`, `invoice.js`, `invoice.css` | Finance-approved invoice/receipt policy, authorized document issuance and audit trail |
+| Email notifications | Text in `app.js` | Transactional email provider, templates, retries and delivery logs |
 
-**How to test:**
+A possible backend API shape (for discussion; **these endpoints do not exist in the static source**) is:
 
-1. Run the website locally or open the deployed demo after uploading the new files.
-2. Use sample status record `AH26-SAMPLE-0001` / `avery@example.org` to open a paid example, or complete a new registration with a simulated successful payment.
-3. For a complimentary example, register and apply `AH26-WAIVER-100` at checkout.
-4. Click **View / print demo invoice** on confirmation or status.
-5. Click **Print / Save as PDF**; in the browser's print dialog, choose **Save as PDF**. The layout is optimized for A4.
-6. Attempt the same from a failed/pending registration; no invoice action should appear. Direct access to the invoice page must show an unavailable message.
+```text
+POST /api/registration/quote                 -> eligible category and server-calculated fee
+POST /api/registrations                     -> validate/create registration and ID
+POST /api/registrations/{id}/coupon         -> validate/redeem coupon; confirm ₹0 waiver
+POST /api/registrations/{id}/payment        -> create positive-amount gateway order
+POST /api/payments/webhook                  -> verify provider event and update payment state
+POST /api/registrations/status              -> secure registration status lookup
+POST /api/admin/registrations/{id}/balance  -> authorized supplementary payment
+POST /api/admin/invoices                    -> finance-authorized invoice workflow, if approved
+```
 
-The preview displays conference logos, participant/billing name, participant-provided GSTIN (unverified), registration ID, **demo** invoice reference, category, fee subtotal, coupon discount, supplementary category correction where applicable, and final INR amount. A complimentary registration shows **₹0** and clearly indicates that no bank payment occurred.
+Store at least participant, registration, paper association, fee quote, coupon/redemption, payment order and attempts, state history, email notifications, invoice request/issuance state, and organizer audit data. Use HTTPS, secrets management, least-privilege access, backups, monitoring, and payment-provider reconciliation. **Do not store card details on the conference server.**
 
-**Critical limitation:** The generated document is explicitly marked **“DEMO INVOICE PREVIEW — NOT A TAX INVOICE.”** It does **not** calculate GST, claim tax inclusivity/exclusivity, supply an official sequential tax invoice number, assert an IIT Kharagpur GSTIN, or constitute evidence of payment. It is based on browser-local, editable demonstration data. The invoice issuer details are illustrative and require Institute approval.
+## 13. End-to-end developer test cases
 
-**Production invoice requirements (to be confirmed with IIT Kharagpur CEP/finance):** Authorized legal issuer and registered address; GSTIN and tax applicability; taxable value/tax components and place of supply; invoice numbering and issuance date; permitted treatment of fee waivers; payment reconciliation; any required signature/authorization; secure participant access; immutable invoice records; and controlled delivery. Generate official invoices **server-side only after verified payment or approved complimentary registration**. If official invoices remain available only upon request, keep the request-and-approval workflow rather than automatically issuing tax invoices.
+Test the demonstration locally and then repeat equivalent cases against the production staging system.
 
-## 11. Production backend implementation guide
-
-The source website is **not** a production system. The development team should implement:
-
-1. **Registration database:** participants, registrations, paper associations, fee category, server-calculated price, coupon redemption, payment attempts, status and audit history.
-2. **Trusted fee engine:** INR category schedule, IST deadline, Indian/student/IEEE eligibility and author full-registration coverage.
-3. **Unique ID creation:** backend-generated public registration reference with a database unique constraint.
-4. **Accepted-paper registry:** editable paper list; manual Other-paper submissions flagged for review; prevent incorrect or duplicate paper coverage.
-5. **Gateway integration:** server-side payment order creation for amounts **greater than ₹0**, hosted checkout, authenticated webhook verification, reconciliation and safe retries.
-6. **Coupon management:** organizer-approved codes, scope, maximum uses, expiry, redemption ledger, atomic redemption; **₹0 orders skip the gateway**.
-7. **Official invoice workflow:** Confirm tax and institutional rules; issue tax invoices only through the authorized finance process, with payment verification and audit history.
-8. **Email service:** success/failure/pending/complimentary templates, verified triggers, delivery logs and retry handling.
-9. **Status API:** ID + verified email/OTP, restricted response fields, throttling and privacy controls.
-10. **Organizer administration:** verify IEEE/student eligibility, approve manual papers, manage coupons and supplementary balances, review failed/pending transactions and invoice requests.
-11. **Operational checks:** test international card payments, gateway settlement in INR, callback signatures, reconciliation and email delivery before opening real registration.
-
-### Suggested API contracts (illustrative, not present in the prototype)
-
-| Endpoint | Purpose |
+| Test | Expected result |
 |---|---|
-| `POST /api/registration/quote` | Calculate authoritative INR fee and deadline |
-| `POST /api/registrations` | Validate form; create registration and ID |
-| `POST /api/registrations/{id}/coupon` | Validate/redeem coupon; confirm a ₹0 order |
-| `POST /api/registrations/{id}/payment` | Create gateway order for positive amount |
-| `POST /api/payments/webhook` | Verify and record provider outcome |
-| `POST /api/registrations/status` | Secure status lookup |
-| `POST /api/admin/registrations/{id}/balance` | Authorized ₹10,000 adjustment |
+| Select a listed accepted paper | Paper ID/title appear in review and registration record |
+| Select **Other** without Paper ID or Title | Continue is blocked with a validation message |
+| Enter Other Paper ID and Title | Form proceeds; details retained; organizer review flagged |
+| Cover a paper's mandatory full registration | Only IEEE Member or Non-IEEE Member fee choices |
+| Choose a student or Indian-only category | Appropriate declarations/eligibility checks apply |
+| Use early fee before 16 Nov 2026 IST | Early fee displayed for time-dependent categories |
+| Use registration after cutoff | Early choice disabled; regular fee applied; fixed categories unchanged |
+| Complete review | Unique-looking demo ID and pending record created |
+| Apply `AH26-WAIVER-100` | ₹0 payable, complimentary confirmation, no gateway |
+| Apply `ASIANHOST-GUEST` or `PHD26-FREE` | Same 100% waiver behavior |
+| Apply invalid coupon | Error shown; amount unchanged; payment actions available |
+| Simulate payment success | Confirmation, status and printable invoice preview available |
+| Simulate payment failure | Failure status and retry; invoice preview unavailable |
+| Cancel without paying | Pending status; invoice preview unavailable |
+| Look up `AH26-SAMPLE-0001` + `avery@example.org` | Successful sample shown; invoice preview accessible |
+| Look up `AH26-SAMPLE-0002` or `AH26-SAMPLE-0003` | Failed/pending sample shown; no invoice preview |
+| Print confirmed invoice preview | A4 printable layout; clearly marked NOT A TAX INVOICE |
+| Attempt invoice URL for failed/pending record | Unavailable message, no printable invoice |
+| Create eligible ₹10,000 balance payment | Separate supplementary order; dummy waiver not accepted |
+| Clear browser storage | Created demo registrations disappear; built-in samples remain |
+| Production: change device clock or tamper with fee | Server refuses incorrect/expired price |
+| Production: repeat coupon/webhook requests | No duplicate redemption, charge or confirmation |
+| Production: verify paid status and email | Success only after signed gateway verification; email delivery logged |
 
-These are recommended interfaces, not existing endpoints. The team may adapt the API names to its backend architecture.
+## 14. Developer handoff and deployment readiness
 
-## 12. Developer acceptance checklist
+1. Run the repository locally and examine all three HTML pages and their corresponding scripts.
+2. Walk through author, attendee and PhD Forum registrations using the fee schedule and validation rules above.
+3. Exercise paid, complimentary, failed and pending outcomes, status lookup, invoice preview and the supplementary-payment case.
+4. Implement the backend and connect the existing frontend to trusted registration, coupon, payment, status and email services.
+5. Obtain organizing-committee and IIT Kharagpur finance/CEP confirmation for official invoices, taxes, issuer details, supplementary payments and production coupon authorization.
+6. Deploy a separate HTTPS staging environment for end-to-end testing, including **international card acceptance**, payment reconciliation, email delivery and waiver handling.
+7. Launch only after confirming the live gateway, server-side deadline/fee enforcement, eligibility checks, secure status lookup, and operational support arrangements.
 
-- [ ] Listed accepted paper can be selected and shown correctly on review.
-- [ ] **Other paper** requires both Paper ID and Paper Title; details survive review and checkout.
-- [ ] Full-registration coverage permits only IEEE Member or Non-IEEE Member.
-- [ ] All eight INR fee categories display the correct prices and eligibility.
-- [ ] At the 15/16 November IST cutoff, early pricing becomes unavailable and regular pricing applies.
-- [ ] PhD Forum fixed fees remain available without the main early cutoff.
-- [ ] Registration ID is automatically created and retained across payment attempts.
-- [ ] `AH26-WAIVER-100`, `ASIANHOST-GUEST` and `PHD26-FREE` give **₹0** in the demo.
-- [ ] A valid 100% coupon bypasses the bank and shows complimentary confirmation/status.
-- [ ] Invalid coupon leaves normal checkout available.
-- [ ] Supplementary ₹10,000 balance-payment order does not accept the demo waiver.
-- [ ] Successful, failed and pending payment outcomes are displayed distinctly.
-- [ ] Status lookup works for all three fictional records and same-browser registrations.
-- [ ] Confirmed paid and complimentary registrations show a printable **demo invoice preview** with correct fee/waiver amounts.
-- [ ] Failed and pending registrations cannot generate a demo invoice.
-- [ ] The preview is visibly **NOT A TAX INVOICE** and does not invent GST or issuer credentials.
-- [ ] Official invoice-on-request process remains separate and requires finance authorization.
-- [ ] Production sends verified outcome emails; no browser-only success assertions.
-- [ ] Production cannot be tricked by browser clock changes, altered fee requests, replayed coupons or repeated payment callbacks.
-- [ ] Production status lookup cannot disclose another participant's information.
-
-## 13. Handoff instructions for the development team
-
-1. **Clone this repository** and run the site locally using Section 1.
-2. **Review the deployed demo** and test each route in Sections 3, 10 and 12.
-3. **Preserve the existing UI and participant journey** unless the organizing committee approves a change.
-4. **Replace the demo-only logic** in `app.js` and `checkout.js` with backend API calls and the approved gateway.
-5. **Connect a database and transactional email service**, then implement organizer verification and coupon controls.
-6. **Share a staging URL** with the organizing committee for end-to-end testing, including international payments and coupon-based complimentary registration.
-7. **Deploy the production portal separately from this GitHub Pages demonstration** with HTTPS, secrets management, logging, backups and operational monitoring.
-
-**Primary principle:** A participant should be able to register, pay or redeem an authorized waiver, receive a confirmation, and subsequently check the same registration status using a single automatically generated registration reference.
+**Expected end state:** A participant can complete registration, pay the correct INR amount or redeem an authorized complimentary waiver, receive a unique Registration ID and confirmation, check their registration status, and request any official invoice through the approved finance process.
