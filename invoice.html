@@ -1,47 +1,12 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0d1f41">
-  <title>Invoice Preview | AsianHOST 2026</title>
-  <link rel="icon" type="image/png" href="assets/asianhost-logo.png">
-  <link rel="stylesheet" href="invoice.css">
-  <script defer src="invoice.js"></script>
-</head>
-<body>
-  <div class="toolbar" id="invoice-toolbar">
-    <div class="toolbar-brand"><img src="assets/asianhost-logo.png" alt="AsianHOST"><div><strong>AsianHOST 2026</strong><span>Registration invoice preview</span></div></div>
-    <div class="toolbar-actions">
-      <a class="action secondary" href="index.html?view=status">← Registration status</a>
-      <button class="action primary" id="print-invoice" type="button" disabled>Print / Save as PDF</button>
-    </div>
-  </div>
-  <main class="invoice-stage">
-    <div id="invoice-error" class="error-card" hidden></div>
-    <article class="invoice-sheet" id="invoice-sheet" hidden aria-label="Demo invoice preview">
-      <div class="watermark">DEMO · NOT VALID</div>
-      <header class="invoice-header">
-        <div class="event-brand"><img src="assets/iitkgp-logo.png" alt="IIT Kharagpur logo"><div><span class="eyebrow">CONFERENCE REGISTRATION</span><h1>AsianHOST <span>2026</span></h1><p>11–13 December 2026 · IIT Kharagpur Research Park, Rajarhat, Kolkata</p></div></div>
-        <img class="asianhost-mark" src="assets/asianhost-logo.png" alt="AsianHOST 2026 logo">
-      </header>
-      <div class="invoice-title-row"><div><div class="eyebrow">REGISTRATION DOCUMENT</div><h2>Demo Invoice Preview</h2><p class="legal-alert">NOT A TAX INVOICE · NOT VALID FOR ACCOUNTING OR GST CLAIMS</p></div><span class="document-chip" id="invoice-status">—</span></div>
-      <div class="info-grid">
-        <section><h3>Illustrative issuer</h3><p><strong>IIT Kharagpur / AsianHOST 2026</strong><br>IIT Kharagpur Research Park<br>Rajarhat, Kolkata, West Bengal, India</p><p class="fine-print">Issuer legal details, GSTIN, registered address and authorized signatory require confirmation by the Institute.</p></section>
-        <section><h3>Billed to</h3><p id="invoice-bill-to">—</p><p class="fine-print" id="invoice-gstin"></p></section>
-      </div>
-      <div class="reference-grid">
-        <div><span>Demo invoice reference</span><strong id="invoice-number">—</strong></div>
-        <div><span>Registration ID</span><strong id="invoice-registration">—</strong></div>
-        <div><span>Registration confirmed</span><strong id="invoice-date">—</strong></div>
-        <div><span>Payment mode</span><strong id="invoice-method">—</strong></div>
-      </div>
-      <section class="items"><h3>Registration fee details</h3><table><thead><tr><th>Description</th><th>Category / period</th><th class="right">Amount (INR)</th></tr></thead><tbody id="invoice-lines"></tbody></table></section>
-      <div class="totals"><div class="totals-label"><span>Fee subtotal</span><strong id="invoice-subtotal">—</strong></div><div class="totals-label" id="discount-row" hidden><span>Complimentary coupon discount</span><strong id="invoice-discount">—</strong></div><div class="totals-final"><span>Amount paid / payable after waiver</span><strong id="invoice-total">—</strong></div></div>
-      <section class="invoice-notes"><h3>Important notes</h3><p id="invoice-waiver-note"></p><p>All figures are illustrative demo amounts. GST applicability, tax-inclusive/exclusive treatment, SAC, place of supply, invoice numbering and statutory details have <strong>not</strong> been determined or certified here.</p><p>The actual conference invoice, where applicable, must be issued by the authorized IIT Kharagpur finance/CEP team after verification of payment and billing information.</p></section>
-      <footer class="invoice-footer"><span>ASIANHOST 2026 · DEMONSTRATION ONLY</span><span>Generated from browser-local sample data · No real payment or invoice issuance</span></footer>
-    </article>
-    <p class="screen-tip">This preview uses the same browser-local registration record as the demo website. Use <strong>Print / Save as PDF</strong> to export it. It is not an official receipt or tax invoice.</p>
-  </main>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Illustrative Invoice Layout | AsianHOST 2026</title><link rel="icon" href="assets/asianhost-logo.png"><link rel="stylesheet" href="invoice.css"><script defer src="invoice.js"></script></head>
+<body><header class="toolbar"><a href="index.html?view=status">← Return to registration status</a><button type="button" id="print-invoice" disabled>Print / Save as PDF</button></header>
+<main class="sheet" id="invoice-sheet" hidden>
+  <div class="watermark">SAMPLE — NOT AN OFFICIAL INVOICE</div>
+  <div class="brand"><img src="assets/iitkgp-logo.png" alt="IIT Kharagpur"><div><h1>AsianHOST 2026</h1><p>11–13 December 2026 · IIT Kharagpur Research Park, Rajarhat, Kolkata</p></div><img src="assets/asianhost-logo.png" alt="AsianHOST"></div>
+  <div class="notice"><strong>ILLUSTRATIVE DOCUMENT — NOT VALID FOR PAYMENT, TAX OR REIMBURSEMENT.</strong> This is a frontend design reference only. An official invoice will be provided upon request at a later date by the organizing committee.</div>
+  <h2>Registration fee illustration</h2><div class="grid"><section><h3>Participant / Billing information</h3><p id="invoice-bill-to">—</p><small id="invoice-gstin">—</small></section><section><h3>Reference details</h3><dl><dt>Preview number</dt><dd id="invoice-number">—</dd><dt>Registration ID</dt><dd id="invoice-registration">—</dd><dt>Date</dt><dd id="invoice-date">—</dd><dt>Method</dt><dd id="invoice-method">—</dd><dt>Status</dt><dd id="invoice-status">—</dd></dl></section></div>
+  <table><thead><tr><th>Item</th><th>Registration category</th><th class="right">Amount (INR)</th></tr></thead><tbody id="invoice-lines"></tbody></table>
+  <div class="totals"><div class="totals-label"><span>Fee subtotal</span><strong id="invoice-subtotal">—</strong></div><div class="totals-label" id="discount-row" hidden><span>Complimentary coupon discount</span><strong id="invoice-discount">—</strong></div><div class="totals-final"><span>Amount recorded after waiver</span><strong id="invoice-total">—</strong></div></div>
+  <p class="footnote" id="invoice-waiver-note"></p><p class="footnote">This document is a simulated preview. It is not an invoice issued by IIT Kharagpur, is not proof of payment, and does not establish any tax liability or entitlement.</p>
+</main><div class="error" id="invoice-error" hidden></div></body></html>
