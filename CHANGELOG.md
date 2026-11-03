@@ -1,36 +1,33 @@
-# AsianHOST 2026 — Restored Feature Package (3 November 2026)
+# AsianHOST 2026 — Invoice Button and Regression Audit (3 November 2026)
 
-## Corrected regression
+## Corrected omission
 
-The previous complete package inadvertently reused older `app.js`, `checkout.js`, `index.html` and `styles.css` files, removing features from the earlier GitHub revisions. This release restores them while retaining the latest policy pages and fee updates.
+The previous package had `invoice.html`, `invoice.js`, and `invoice.css`, but **did not provide buttons to open the invoice from the confirmation or status screens**. This is fixed:
 
-## Restored
+- Confirmed paid or complimentary registrations: **View / Print Invoice Preview** on success confirmation and successful status lookup.
+- Browser-created confirmed registrations: **Request Official Invoice** mailto link to Siddhartha (illustrative request flow).
+- Invoice preview: enabled **Print / Save as PDF** button and visible SAMPLE watermark.
+- Failed and pending records: no invoice preview button.
+- Official invoice remains **available upon request at a later date**; the sample layout is not a tax invoice or receipt.
 
-- Coupon field and 100% complimentary-registration workflow (`checkout.html`, `checkout.js`).
-- Three public example waiver codes for **demonstration only**; valid codes skip the mock gateway and confirm ₹0 due.
-- Clear complimentary confirmation and status information (`app.js`).
-- **Other — my accepted paper is not listed** option with mandatory Paper ID and Paper Title.
-- Illustrative printable invoice layout (`invoice.html`, `invoice.js`, `invoice.css`), explicitly **not an official invoice** and not automatically presented to participants.
-- Detailed developer README with the original 14-part structure, now expanded to 16 sections.
-- Private coupon-code generator source, capable of producing 150+ unique codes; no real coupon CSV included.
+## Regression safeguards
 
-## Retained and updated
+Expanded browser checks now verify the actual invoice action on both screens, the invoice preview rendering, the print control, 100% coupon flow, manual paper entry, all INR rates, early-registration cutoff, sample status records, refund cutoff, contacts and mandatory policy links.
 
-- All eight INR fee categories, paper coverage rules, IEEE and student eligibility, and ₹10,000 supplemental balance-payment example.
-- Early cutoff: 15 November 2026, 11:59 p.m. IST; regular fees from 16 November.
-- Professional participant registration, checkout, confirmation and status lookup with fictional sample records.
-- Four mandatory public pages: Terms & Conditions, Refund & Cancellation, Privacy Policy, About & Contact.
-- Refund request cutoff: 5 December 2026, 11:59 p.m. IST.
-- Refund requests: Prof. Sarani Bhattacharya, `bhattacharya.sarani.iitkgp@gmail.com`.
-- Contact: `joydeepchow@gmail.com` and `siddhartha.chowdhury92@gmail.com`.
-- Invoice upon request at a later date; real success/failure emails require production backend.
+## All earlier features retained
 
-## Additional fixes
+- 100% coupon entry and complimentary ₹0 confirmation without gateway redirection.
+- Printable sample invoice layout and invoice-request instructions.
+- 12 accepted papers plus **Other** paper ID/title entry.
+- Eight INR fee categories, mandatory full-paper registration, IEEE/student verification notes.
+- 15 November 2026 11:59 p.m. IST early cutoff; 16 November regular/on-site rates.
+- ₹10,000 organizer-authorized IEEE category-correction example.
+- Simulated success/failure, registered-email notifications described for production, browser-local status lookup and three fictional records.
+- Terms, Refund & Cancellation, Privacy, About & Contact pages.
+- 5 December 2026 11:59 p.m. IST refund request cutoff; Prof. Sarani Bhattacharya (`bhattacharya.sarani.iitkgp@gmail.com`).
+- Contact addresses: `joydeepchow@gmail.com`, `siddhartha.chowdhury92@gmail.com`.
+- Detailed 17-section developer README, coupon generator in private developer tools, and production integration requirements.
 
-- Fixed loading a direct confirmation URL (`index.html?view=confirmation&id=...`).
-- Added a checkout-time deadline recheck for unpaid early-rate orders.
-- Removed internal 2025 currency-conversion rationale from participant-facing refund page.
+## Deployment boundary
 
-## Production caveats
-
-No real payments, coupon validation, email delivery, invoices, or shared status database are provided. A production developer must implement all of them securely. The ₹5,000 processing fee and other legal policy details require organizing-committee approval.
+This is a static developer reference, not a live gateway, mail system, official invoicing service, or persistent database. Official invoices, secure coupon redemption, fee deadlines, eligibility checks and payment confirmation require a trusted backend. Refund processing fee of ₹5,000 remains subject to organizing-committee approval.

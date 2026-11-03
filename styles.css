@@ -89,3 +89,9 @@
 #other-paper-fields{margin:12px 0 15px;padding:16px;background:#f8faff;border:1px solid #dce5f4;border-radius:12px}
 #other-paper-fields input{width:100%}
 @media(max-width:600px){.coupon-entry{flex-direction:column;align-items:stretch}.coupon-entry .btn{width:100%}}
+
+/* Sample invoice actions: visible on confirmed registration status and confirmation. */
+.invoice-preview-action{border-color:#b7cee9;background:#eff5ff;color:#183b70;font-weight:800}
+.invoice-preview-action:hover{background:#e5f0ff;border-color:#91b7e7}
+.status-actions .invoice-preview-action,.confirmation-actions .invoice-preview-action{white-space:normal;text-align:center}
+@media(max-width:520px){.status-actions .btn,.confirmation-actions .btn{max-width:100%;white-space:normal;text-align:center}}

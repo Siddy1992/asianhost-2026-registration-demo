@@ -59,7 +59,7 @@ To start fresh, clear storage for the website or use a private browsing window. 
 | `styles.css` | Shared responsive styling | Preserve branding, mobile layout and accessible states |
 | `checkout.html` | Checkout, coupon input and simulated payment outcome | Replace payment buttons with hosted gateway checkout |
 | `checkout.js` | Sample 100% coupons, waived confirmation, mock paid/failed outcomes | Never trust client-side coupon or payment decisions |
-| `invoice.html` | **Illustrative invoice design only** | Do not issue this as an official receipt or tax invoice |
+| `invoice.html` | **Illustrative invoice design, linked from confirmed status and confirmation** | Do not issue this as an official receipt or tax invoice |
 | `invoice.js` | Loads a successful sample/browser registration and populates the illustrative layout | Replace with approved server-generated invoice on request |
 | `invoice.css` | Printable invoice-preview design | Includes visible SAMPLE watermark |
 | `terms.html` | Terms & Conditions | Review with organizers before live release |
@@ -102,7 +102,7 @@ flowchart TD
   R --> S[Email notification in production]
 ```
 
-**URLs and views:** `index.html` opens the form; `index.html?view=status` opens status lookup; `index.html?view=confirmation&id=<registration-id>` shows an outcome; `checkout.html?id=<registration-id>` opens checkout. `invoice.html?id=<registration-id>` is an optional **developer-only design reference** and is not an official participant invoice. Policy pages are linked from the website footer and review acknowledgement.
+**URLs and views:** `index.html` opens the form; `index.html?view=status` opens status lookup; `index.html?view=confirmation&id=<registration-id>` shows an outcome; `checkout.html?id=<registration-id>` opens checkout. `invoice.html?id=<registration-id>` is linked by **View / Print Invoice Preview** buttons for confirmed (paid or complimentary) demo registrations; it is an illustrative design reference, not an official participant invoice. Policy pages are linked from the website footer and review acknowledgement.
 
 ## 4. Registration types and accepted-paper rules
 
@@ -239,7 +239,7 @@ The earlier ₹10,000 **Other – Balance Payment** demonstration remains availa
 
 ## 9. Confirmation, status lookup and sample records
 
-After a simulated success, failure, pending result, or complimentary coupon, the participant sees a confirmation screen containing the registration ID, name, category, amount, email and relevant outcome. A complimentary registration is labeled **Registration confirmed — fee waived** rather than **Payment successful**. Invoice-on-request language remains visible.
+After a simulated success, failure, pending result, or complimentary coupon, the participant sees a confirmation screen containing the registration ID, name, category, amount, email and relevant outcome. A complimentary registration is labeled **Registration confirmed — fee waived** rather than **Payment successful**. Invoice-on-request language remains visible. For confirmed registrations, the confirmation screen now shows a **View / Print Invoice Preview** button and an email-based **Request Official Invoice** action (not shown for fictional sample records). Failed or pending registrations do not show invoice actions.
 
 The **Check Status** view accepts **Registration ID + registered email address**. The following fictional records are always available:
 
@@ -253,9 +253,15 @@ A registration created in the same browser is also searchable. The status lookup
 
 ## 10. Illustrative invoice preview and print/PDF behavior
 
-The earlier invoice-design capability has been restored as `invoice.html`, `invoice.js`, and `invoice.css`. It is **not linked as an automatic participant entitlement** because the committee's actual policy is that an invoice will be provided **upon request at a later date**. It remains an optional developer reference for invoice layout.
+The illustrative invoice-design capability is implemented by `invoice.html`, `invoice.js`, and `invoice.css`. **This release restores the missing participant-facing buttons.** After a simulated successful payment or a 100% complimentary coupon, the participant can open the invoice design from either:
 
-To inspect the layout, open `invoice.html?id=AH26-SAMPLE-0001` locally, or use a confirmed browser registration ID. The preview includes participant/billing details, category, original amount, any coupon discount, and final amount. It has an explicit **SAMPLE — NOT AN OFFICIAL INVOICE** watermark and a print/PDF button. No legal issuer/tax determination is implied. Do not issue this document to participants as a payment receipt or tax invoice.
+1. **Payment confirmation:** **View / Print Invoice Preview** appears alongside **Check registration status**. For browser-created registrations, **Request Official Invoice** opens a pre-addressed email to `siddhartha.chowdhury92@gmail.com` containing the registration reference.
+2. **Check registration status:** after entering the correct registration ID and registered email, confirmed results show **View / Print Invoice Preview** and (for non-sample records) **Request Official Invoice**. Failed and pending results intentionally do not offer an invoice preview.
+3. **Invoice preview:** `invoice.html?id=<registration-id>` shows the sample invoice layout and a working **Print / Save as PDF** button. To test immediately, open `index.html?view=status`, select sample record `AH26-SAMPLE-0001`, and click **View / Print Invoice Preview**.
+
+The preview includes participant/billing details, category, original amount, any coupon discount, and final amount. It has a prominent **SAMPLE — NOT AN OFFICIAL INVOICE** watermark. **The sample preview is not an official invoice, receipt, proof of payment or tax document.** The separate committee policy remains unchanged: an official invoice will be provided **upon request at a later date**. The email link is only an illustration of the request workflow; the static demo cannot send emails itself.
+
+The production developer must issue official invoices through a controlled server-side process, never from unverified browser-local records.
 
 In production, invoice generation must use verified settlement and registration data, approved issuer information, applicable tax/GST treatment, serial numbering, reconciliation, audit trail and an organizer-approved request workflow. Whether a zero-fee complimentary registration receives a separate acknowledgment or a zero-value invoice must be decided by IIT Kharagpur's authorized finance team.
 
@@ -382,3 +388,11 @@ The participant-facing pages state that **an invoice will be provided upon reque
 This restored package specifically corrects the regression introduced when the policy-page update was assembled from an earlier pre-coupon snapshot. It restores **coupon entry and 100% waiver behavior**, **Other accepted paper**, the **illustrative invoice layout**, and the **detailed developer README**, while retaining the 2026 INR rates, early-registration cutoff, professional confirmation/status UI and four policy pages. It also fixes direct loading of the `?view=confirmation` URL.
 
 When making future changes, compare the proposed package against the current repository and verify the feature checklist in Section 13. Avoid replacing `app.js`, `checkout.js` or `README.md` with an older snapshot merely to add new policy HTML. A production implementation should be version-controlled and tested with a repeatable regression suite.
+
+## 17. Mandatory invoice-button regression checks (3 November 2026)
+
+The preceding package included `invoice.html` but accidentally omitted the links to it. To prevent recurrence, the browser regression suite now asserts that both **successful confirmation** and **successful status lookup** display **View / Print Invoice Preview**, that the invoice preview renders, and that the **Print / Save as PDF** button is enabled. It also verifies that pending and failed records do not show the invoice action, and that coupon-waived registrations do.
+
+**Quick manual check:** Open **Check Status** → choose `AH26-SAMPLE-0001` / `avery@example.org` → click **View / Print Invoice Preview** → confirm the SAMPLE watermark and **Print / Save as PDF** control. For a complete registration, select a fee, fill the form, simulate a successful payment or apply `AH26-WAIVER-100`, and check the same invoice button on the confirmation page.
+
+The public website ZIP contains the HTML/CSS/JS files and this README; the full developer ZIP also contains the test utility and private coupon generator. **Do not publish real coupon CSVs, payment secrets or participant data in GitHub Pages.**
