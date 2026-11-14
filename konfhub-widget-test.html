@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KonfHub Checkout Test | AsianHOST 2026</title>
+  <link rel="icon" type="image/png" href="assets/asianhost-logo.png">
+  <style>
+    :root { color-scheme: light; font-family: Arial, Helvetica, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f2f5fa; color: #182640; }
+    header { background: #0d1f41; color: white; padding: 18px 24px; }
+    header .wrap { max-width: 1120px; margin: auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    header strong { font-size: 20px; }
+    header a { color: white; }
+    main { max-width: 1120px; margin: 28px auto; padding: 0 16px 28px; }
+    h1 { font-size: clamp(23px, 3vw, 30px); margin: 0 0 10px; }
+    p { line-height: 1.55; }
+    .notice { background: #fff8e7; border: 1px solid #e6c87c; border-radius: 10px; padding: 14px 18px; margin: 20px 0; }
+    .widget { background: white; border: 1px solid #d8e0eb; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 24px rgba(0,0,0,.06); }
+    iframe { display: block; width: 100%; height: 900px; border: 0; }
+    footer { text-align: center; padding: 16px; font-size: 13px; color: #52617a; }
+    footer a { color: #0b3475; }
+    @media (max-width: 640px) { iframe { height: 1100px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap"><strong>AsianHOST 2026 · KonfHub Widget Test</strong><a href="index.html">← Back to registration</a></div>
+  </header>
+  <main>
+    <h1>Embedded KonfHub registration checkout</h1>
+    <p>This is an isolated integration test of the <strong>Indian Student – General</strong> ticket (₹2,000). It does not yet transfer information from the AsianHOST registration form or update the AsianHOST registration-status database.</p>
+    <div class="notice"><strong>Testing only:</strong> Verify that the form, ticket, consent checkbox and checkout interface display correctly. Do not submit a real payment until SRIC settlement, tax treatment and payment terms have been approved.</div>
+    <section class="widget" aria-label="KonfHub checkout">
+      <iframe src="https://konfhub.com/widget/id/eaa9296e-ad76-4de9-bdc1-06a0c1ce1e1d" id="konfhub-widget" title="Register for AsianHOST 2026 Conference Registration" width="100%" height="900" allow="payment"></iframe>
+    </section>
+  </main>
+  <footer>AsianHOST 2026 · <a href="terms.html">Terms</a> · <a href="refund.html">Refund Policy</a> · <a href="privacy.html">Privacy Policy</a></footer>
+</body>
+</html>
